@@ -1,7 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, Text, View } from "react-native";
+import { ActivityIndicator, FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import MemberMenuModal from "./components/MemberMenuModal";
 import MessageCard from "./components/MessageCard";
 
 
@@ -10,11 +11,16 @@ type Message = {
     title: string;
     body: string;
     published_at: string;
+    image_path: string;
 };
 
 export default function InboxScreen() {
     const [messages, setMessages] = useState<Message[]>([]);
     const [loading, setLoading] = useState(true);
+    const [menuOpen, setMenuOpen] = useState(false);
+    const [refreshing, setRefreshing] = useState(false);
+
+
 
     useEffect(() => {
         fetchMessages();
@@ -34,7 +40,7 @@ export default function InboxScreen() {
 
             const data = await res.json();
             setMessages(data.data ?? []);
-            console.log(messages)
+
 
         } catch (e) {
             console.log("Failed to load messages", e);
@@ -42,6 +48,22 @@ export default function InboxScreen() {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            fetchMessages();
+        }, 30000); // every 30 seconds
+
+        return () => clearInterval(interval);
+    }, []);
+
+    const refreshMessages = async () => {
+        setRefreshing(true);
+        await fetchMessages();   // your existing API call
+        setRefreshing(false);
+    };
+
+
 
     if (loading) {
         return (
@@ -54,24 +76,39 @@ export default function InboxScreen() {
     return (
         <SafeAreaView className="flex-1 bg-[#F4F6FB]">
             {/* Header */}
-            <View className="bg-[#272757] px-4 py-4">
-                <Text className="text-white text-xl font-semibold">
-                    Inbox
-                </Text>
+            <View className="bg-[#272757] px-4 py-3 flex-row items-center justify-between">
+
+                {/* Left: Menu */}
+                <TouchableOpacity onPress={() => setMenuOpen(true)}>
+                    <Text className="text-white text-2xl font-bold">☰</Text>
+                </TouchableOpacity>
+
+                {/* Right: Church Logo */}
+                <Image
+                    source={require("../assets/images/church-logo.png")}
+                    className="w-8 h-8"
+                    resizeMode="contain"
+                />
             </View>
+
+            <MemberMenuModal visible={menuOpen}
+                onClose={() => setMenuOpen(false)} />
 
             {/* Message list */}
             <FlatList
                 data={messages}
                 keyExtractor={(item) => item.id.toString()}
-                contentContainerStyle={{ padding: 12 }}
                 renderItem={({ item }) => <MessageCard item={item} />}
+                contentContainerStyle={{ padding: 12 }}
+                refreshing={refreshing}
+                onRefresh={refreshMessages}
                 ListEmptyComponent={
                     <Text className="text-center text-gray-500 mt-10">
                         No messages available
                     </Text>
                 }
             />
+
         </SafeAreaView>
     );
 }

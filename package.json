@@ -1,5 +1,5 @@
 {
-  "name": "churchmsgapp",
+  "name": "csiwcr",
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
@@ -39,7 +39,9 @@
     "react-native-web": "~0.21.0",
     "react-native-worklets": "0.5.1",
     "tailwindcss": "^3.4.19",
-    "@react-native-async-storage/async-storage": "2.2.0"
+    "@react-native-async-storage/async-storage": "2.2.0",
+    "expo-notifications": "~0.32.16",
+    "expo-device": "~8.0.10"
   },
   "devDependencies": {
     "@types/react": "~19.1.0",
