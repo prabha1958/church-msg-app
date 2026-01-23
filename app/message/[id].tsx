@@ -1,81 +1,102 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, Text, TouchableOpacity } from "react-native";
+import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-type Message = {
-    id: number;
-    title: string;
-    body: string;
-    published_at: string;
-};
+const IMAGE_BASE_URL = "http://192.168.1.82:8000/storage";
 
 export default function MessageDetail() {
     const { id } = useLocalSearchParams<{ id: string }>();
-    const [message, setMessage] = useState<Message | null>(null);
-    const [loading, setLoading] = useState(true);
-    const router = useRouter()
+    const router = useRouter();
+    const [message, setMessage] = useState<any>(null);
+    const [menuOpen, setMenuOpen] = useState(false);
 
     useEffect(() => {
         fetchMessage();
     }, []);
 
     const fetchMessage = async () => {
-        try {
-            const token = await AsyncStorage.getItem("auth_token");
+        const token = await AsyncStorage.getItem("auth_token");
 
-            const res = await fetch(
-                `http://192.168.1.82:8000/api/messages/${id}`,
-                {
-                    headers: {
-                        Accept: "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+        const res = await fetch(
+            `http://192.168.1.82:8000/api/messages/${id}`,
+            {
+                headers: {
+                    Accept: "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
 
-            const data = await res.json();
-            setMessage(data);
-        } catch (e) {
-            console.log("Failed to load message", e);
-        } finally {
-            setLoading(false);
-        }
+        const data = await res.json();
+        setMessage(data);
     };
 
-    if (loading) {
-        return (
-            <SafeAreaView className="flex-1 justify-center items-center">
-                <ActivityIndicator size="large" />
-            </SafeAreaView>
-        );
-    }
-
-    if (!message) {
-        return (
-            <SafeAreaView className="flex-1 justify-center items-center">
-                <Text>Message not found</Text>
-            </SafeAreaView>
-        );
-    }
+    if (!message) return null;
 
     return (
-        <SafeAreaView className="flex-1 bg-[#F4F6FB] px-4 py-4">
-            <TouchableOpacity onPress={() => router.back()}>
-                <Text className="text-blue-950 text-lg mr-3">←</Text>
-            </TouchableOpacity>
-            <Text className="text-[#272757] text-xl font-semibold mb-2">
-                {message.title}
-            </Text>
+        <SafeAreaView className="flex-1  bg-[#040c1f]">
+            {/* Header */}
+            <View className="bg-[#272757] px-4 py-3 flex-row items-center justify-between">
 
-            <Text className="text-gray-500 text-sm mb-4">
-                {new Date(message.published_at).toDateString()}
-            </Text>
+                {/* Left: Menu */}
+                <TouchableOpacity onPress={() => setMenuOpen(true)}>
+                    <Text className="text-white text-2xl font-bold">☰</Text>
+                </TouchableOpacity>
 
-            <Text className="text-gray-700 text-base leading-6">
-                {message.body}
-            </Text>
+                {/* Right: Church Logo */}
+                <Image
+                    source={require("../../assets/images/church-logo.png")}
+                    className="w-8 h-8"
+                    resizeMode="contain"
+                />
+            </View>
+            {/* Header */}
+            <View className=" px-4 py-3 flex-row items-center">
+                <Text
+                    className="text-white text-2xl mr-3"
+                    onPress={() => router.back()}
+                >
+                    ←
+                </Text>
+
+            </View>
+
+            <ScrollView contentContainerStyle={{ padding: 16 }}>
+                <View className="bg-blue-700 py-10 px-4 rounded-2xl">
+                    <Text className="text-blue-50 text-sm text-right">
+                        {new Date(message.published_at).toDateString()}
+                    </Text>
+                    {/* Title + Date */}
+                    <View className="flex-row items-start mb-3">
+                        <Text className="text-[#ededf6] text-xl font-semibold flex-1 pr-2">
+                            {message.title}
+                        </Text>
+
+
+                    </View>
+
+                    {/* Image (if exists) */}
+                    {message.image_path && (
+                        <Image
+                            source={{
+                                uri: `${IMAGE_BASE_URL}/${message.image_path}`,
+                            }}
+                            className="w-full h-56 rounded-xl mb-4"
+                            resizeMode="cover"
+                        />
+                    )}
+
+                    {/* Body */}
+                    <Text className="text-blue-50 text-base leading-6">
+                        {message.body}
+                    </Text>
+
+
+                </View>
+
+            </ScrollView>
         </SafeAreaView>
     );
 }

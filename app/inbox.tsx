@@ -74,7 +74,10 @@ export default function InboxScreen() {
     }
 
     return (
-        <SafeAreaView className="flex-1 bg-[#F4F6FB]">
+        <SafeAreaView className="flex-1 bg-[#040c1f]">
+
+
+
             {/* Header */}
             <View className="bg-[#272757] px-4 py-3 flex-row items-center justify-between">
 
@@ -95,6 +98,7 @@ export default function InboxScreen() {
                 onClose={() => setMenuOpen(false)} />
 
             {/* Message list */}
+
             <FlatList
                 data={messages}
                 keyExtractor={(item) => item.id.toString()}

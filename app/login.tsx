@@ -2,14 +2,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { registerForPushNotifications } from "../lib/registerForPush";
 
-export default async function LoginScreen() {
+
+export default function LoginScreen() {
     const [memberId, setMemberId] = useState("");
     const [mobile, setMobile] = useState("");
     const [loading, setLoading] = useState(false);
     const router = useRouter()
-    const pushToken = await registerForPushNotifications();
+
 
     const API_URL = 'http://192.168.1.82:8000'
 
@@ -51,21 +51,21 @@ export default async function LoginScreen() {
             await AsyncStorage.setItem("auth_token", data.token);
             await AsyncStorage.setItem("member", JSON.stringify(data.member));
 
-            const token = AsyncStorage.getItem('auth_token');
 
-            if (pushToken) {
-                await fetch(`${API_URL}/api/device-token`, {
-                    method: "POST",
-                    headers: {
-                        Accept: "application/json",
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        token: pushToken,
-                    }),
-                });
-            }
+
+            // if (pushToken) {
+            //    await fetch(`${API_URL}/api/device-token`, {
+            //      method: "POST",
+            //    headers: {
+            //      Accept: "application/json",
+            //    Authorization: `Bearer ${token}`,
+            //  "Content-Type": "application/json",
+            // },
+            // body: JSON.stringify({
+            //   token: pushToken,
+            // }),
+            // });
+            // }
             router.replace('/inbox');
 
 

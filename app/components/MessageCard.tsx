@@ -14,7 +14,15 @@ export default function MessageCard({ item }: { item: any }) {
             onPress={() => router.push(`/message/${item.id}`)}
 
         >
-            <View className="bg-white rounded-xl p-4 mb-3 shadow-sm">
+
+            <View className="bg-blue-700 rounded-xl p-4 mb-3 shadow-sm">
+
+                <Text className="text-xs text-gray-400 text-right">
+                    {new Date(item.published_at).toDateString()}
+                </Text>
+
+
+
                 {item.image_path &&
                     <Image
                         source={
@@ -27,20 +35,19 @@ export default function MessageCard({ item }: { item: any }) {
 
                     />
                 }
-                <Text className="text-[#1E1E3F] font-semibold text-base mb-1">
+
+                <Text className="text-[#d0d0f7] font-semibold text-base mb-1">
                     {item.title}
                 </Text>
 
                 <Text
-                    className="text-gray-600 text-sm mb-2"
+                    className="text-blue-200 text-sm mb-2"
                     numberOfLines={3}
                 >
                     {item.body}
                 </Text>
 
-                <Text className="text-xs text-gray-400">
-                    {new Date(item.published_at).toDateString()}
-                </Text>
+
             </View>
         </TouchableOpacity>
     );
