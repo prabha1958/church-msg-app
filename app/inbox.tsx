@@ -21,7 +21,6 @@ export default function InboxScreen() {
     const [refreshing, setRefreshing] = useState(false);
 
 
-
     useEffect(() => {
         fetchMessages();
     }, []);
@@ -30,7 +29,8 @@ export default function InboxScreen() {
         try {
             const token = await AsyncStorage.getItem("auth_token");
 
-            const res = await fetch("http://192.168.1.82:8000/api/messages", {
+
+            const res = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/messages`, {
                 headers: {
                     Accept: "application/json",
                     Authorization: `Bearer ${token}`,

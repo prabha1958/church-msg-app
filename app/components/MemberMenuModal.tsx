@@ -7,8 +7,9 @@ import { Animated, Dimensions, Image, Modal, Text, TouchableOpacity, View } from
 
 
 
+
 const SCREEN_WIDTH = Dimensions.get("window").width;
-const DRAWER_WIDTH = SCREEN_WIDTH * 0.75; // 75% width
+const DRAWER_WIDTH = SCREEN_WIDTH * 0.70; // 70% width
 
 type Member = {
     id?: number;
@@ -28,7 +29,7 @@ export default function MemberMenuModal({
     const router = useRouter();
     const translateX = useRef(new Animated.Value(-DRAWER_WIDTH)).current;
     const [member, setMember] = useState<Member | null>(null);
-    const PROFILE_BASE_URL = "http://192.168.1.82:8000/storage";
+
 
     // Load member when modal opens
     useEffect(() => {
@@ -78,27 +79,31 @@ export default function MemberMenuModal({
                 // width must be inline style
                 >
                     <View style={{ width: DRAWER_WIDTH }}>
-                        <View className="flex items-center">
+                        <View className="flex items-center mb-5">
                             <Image
                                 source={
                                     member?.profile_photo
-                                        ? { uri: `${PROFILE_BASE_URL}/${member.profile_photo}` }
+                                        ? { uri: `${process.envEXPO_PUBLIC_STORAGE_URL}/${member.profile_photo}` }
                                         : require("../../assets/images/avatar.png")
                                 }
-                                className="w-20 h-20"
+                                className="w-20 h-20 rounded-full"
                                 resizeMode="contain"
 
                             />
 
                         </View>
 
-                        <Text className="text-xl font-semibold text-[#272757] mb-1">
+                        <Text className="text-xl font-semibold text-blue-900 mb-1">
                             {member?.family_name ?? "Member"}  {member?.first_name ?? "Member"}  {member?.last_name ?? "Member"}
                         </Text>
 
-                        <Text className="text-gray-500 mb-6">
+                        <Text className="text-gray-500 mb-6 text-sm font-bold">
                             Member ID: {member?.id ?? "-"}
                         </Text>
+
+                        <TouchableOpacity onPress={() => { onClose(); router.push('/subscription') }} className="mb-9">
+                            <Text>Subscription</Text>
+                        </TouchableOpacity>
 
                         <TouchableOpacity
                             onPress={logout}
@@ -108,6 +113,8 @@ export default function MemberMenuModal({
                                 Logout
                             </Text>
                         </TouchableOpacity>
+
+
                     </View>
                 </Animated.View>
 

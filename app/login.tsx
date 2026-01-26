@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { registerForPushNotifications } from "../lib/registerForPush";
 
 
 export default function LoginScreen() {
@@ -9,9 +10,10 @@ export default function LoginScreen() {
     const [mobile, setMobile] = useState("");
     const [loading, setLoading] = useState(false);
     const router = useRouter()
+    const pushToken = registerForPushNotifications();
 
 
-    const API_URL = 'http://192.168.1.82:8000'
+
 
 
     const handleLogin = async () => {
@@ -25,7 +27,7 @@ export default function LoginScreen() {
 
         try {
 
-            const res = await fetch(`${API_URL}/api/member/login`, {
+            const res = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/member/login`, {
 
                 method: "POST",
                 headers: {
@@ -50,22 +52,21 @@ export default function LoginScreen() {
             // ✅ store token later
             await AsyncStorage.setItem("auth_token", data.token);
             await AsyncStorage.setItem("member", JSON.stringify(data.member));
+            const token = await AsyncStorage.getItem('auth_token')
 
-
-
-            // if (pushToken) {
-            //    await fetch(`${API_URL}/api/device-token`, {
-            //      method: "POST",
-            //    headers: {
-            //      Accept: "application/json",
-            //    Authorization: `Bearer ${token}`,
-            //  "Content-Type": "application/json",
-            // },
-            // body: JSON.stringify({
-            //   token: pushToken,
-            // }),
-            // });
-            // }
+            if (pushToken) {
+                await fetch(`${process.env.EXPO_PUBLIC_API_URL}/device-token`, {
+                    method: "POST",
+                    headers: {
+                        Accept: "application/json",
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        token: pushToken,
+                    }),
+                });
+            }
             router.replace('/inbox');
 
 

@@ -92,6 +92,10 @@ export default function MessageDetail() {
                     <Text className="text-blue-50 text-base leading-6">
                         {message.body}
                     </Text>
+                    <View className="mt-2">
+                        <Text className="text-xl font-bold  text-amber-50 text-right">{message.from_name}</Text>
+                        <Text className="text-blue-50 text-right">{message.from}</Text>
+                    </View>
 
 
                 </View>

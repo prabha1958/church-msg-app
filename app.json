@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "churchmsgapp",
-    "slug": "churchmsgapp",
+    "slug": "csiwcr",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -46,6 +46,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "b0977dc6-fac2-426a-9099-99a33f166c77"
+      }
+    },
+    "owner": "sudhir218"
   }
 }
