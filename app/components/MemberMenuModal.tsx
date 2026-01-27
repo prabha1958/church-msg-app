@@ -105,6 +105,10 @@ export default function MemberMenuModal({
                             <Text>Subscription</Text>
                         </TouchableOpacity>
 
+                        <TouchableOpacity onPress={() => { onClose(); router.push('/profile') }} className="mb-9">
+                            <Text>Profile</Text>
+                        </TouchableOpacity>
+
                         <TouchableOpacity
                             onPress={logout}
                             className="bg-red-600 py-3 rounded-lg mb-3"

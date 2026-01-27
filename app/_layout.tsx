@@ -1,5 +1,4 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as Notifications from "expo-notifications";
 import { Stack, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
@@ -26,30 +25,30 @@ export default function RootLayout() {
     checkAuth();
   }, []);
 
-  Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-      shouldShowAlert: true,
-      shouldPlaySound: true,
-      shouldSetBadge: false,
+  //  Notifications.setNotificationHandler({
+  //  handleNotification: async () => ({
+  //  shouldShowAlert: true,
+  //  shouldPlaySound: true,
+  //   shouldSetBadge: false,
 
-      // ✅ REQUIRED in newer expo-notifications
-      shouldShowBanner: true,
-      shouldShowList: true,
-    }),
-  });
+  // ✅ REQUIRED in newer expo-notifications
+  //     shouldShowBanner: true,
+  //     shouldShowList: true,
+  //    }),
+  //  });
 
-  useEffect(() => {
-    const sub =
-      Notifications.addNotificationResponseReceivedListener(response => {
-        const data = response.notification.request.content.data;
+  // useEffect(() => {
+  //  const sub =
+  //  Notifications.addNotificationResponseReceivedListener(response => {
+  //    const data = response.notification.request.content.data;
 
-        if (data?.type === "message") {
-          router.push(`/message/${data.message_id}`);
-        }
-      });
+  //     if (data?.type === "message") {
+  //       router.push(`/message/${data.message_id}`);
+  //   }
+  //   });
 
-    return () => sub.remove();
-  }, []);
+  //  return () => sub.remove();
+  // }, []);
 
 
   // ✅ ALWAYS return Stack immediately

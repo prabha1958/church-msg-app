@@ -54,19 +54,19 @@ export default function LoginScreen() {
             await AsyncStorage.setItem("member", JSON.stringify(data.member));
             const token = await AsyncStorage.getItem('auth_token')
 
-            if (pushToken) {
-                await fetch(`${process.env.EXPO_PUBLIC_API_URL}/device-token`, {
-                    method: "POST",
-                    headers: {
-                        Accept: "application/json",
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        token: pushToken,
-                    }),
-                });
-            }
+            //   if (pushToken) {
+            //     await fetch(`${process.env.EXPO_PUBLIC_API_URL}/device-token`, {
+            //       method: "POST",
+            //     headers: {
+            //       Accept: "application/json",
+            //     Authorization: `Bearer ${token}`,
+            //   "Content-Type": "application/json",
+            // },
+            // body: JSON.stringify({
+            //   token: pushToken,
+            //  }),
+            // });
+            //  }
             router.replace('/inbox');
 
 

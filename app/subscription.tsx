@@ -70,7 +70,7 @@ export default function Subscription() {
             const member = JSON.parse(memberStr);
 
             const res = await fetch(
-                `${process.env.EXPO_PUBLIC_API_URL}/admin/subscriptions/${member.id}`,
+                `${process.env.EXPO_PUBLIC_API_URL}/subscriptions/${member.id}`,
                 {
                     headers: {
                         Accept: "application/json",
@@ -113,27 +113,32 @@ export default function Subscription() {
     }
 
     return (
-        <SafeAreaView className="flex-1 bg-[#040c1f]">
+        <SafeAreaView className="flex-1 bg-[#040c1f] p-2">
             {/* Header */}
             <View className="bg-[#071633] px-4 py-4 border-b border-[#102a56]">
-                <View className="flex-row items-center mb-2">
+                <View className="flex mb-2">
                     <Text
-                        className="text-amber-400 text-2xl mr-4"
+                        className="text-amber-400 text-2xl mr-4 text-left"
                         onPress={() => router.back()}
                     >
                         ←
                     </Text>
-                    <Text className="text-amber-400 text-xl font-bold">
+                </View>
+                <View className="mb-3">
+                    <Text className="text-amber-400 text-xl font-bold text-center">
                         SUBSCRIPTION
+                    </Text>
+                    <Text className="text-amber-400 text-sm font-bold text-center">
+                        Details
                     </Text>
                 </View>
 
                 <Text className="text-slate-300">
-                    Name: <Text className="text-amber-300">{data.member.name}</Text>
+                    Name: <Text className="text-amber-300 text-xl">{data.member.name}</Text>
                 </Text>
 
                 <Text className="text-slate-300">
-                    Member ID: <Text className="text-amber-300">{data.member.id}</Text>
+                    Member ID: <Text className="text-blue-50">{data.member.id}</Text>
                 </Text>
 
                 <Text className="text-slate-300">
@@ -145,7 +150,7 @@ export default function Subscription() {
             </View>
 
             {/* Table Header */}
-            <View className="flex-row px-3 py-3 border-b border-[#102a56]">
+            <View className="flex-row px-3 py-3 border-b border-[#102a56] border border-amber-200">
                 <Text className="flex-1 text-amber-400 font-semibold">Month</Text>
                 <Text className="flex-1 text-center text-amber-400 font-semibold">
                     Payment
@@ -164,7 +169,7 @@ export default function Subscription() {
                 keyExtractor={(item, index) => `${item.month}-${index}`}
                 contentContainerStyle={{ paddingBottom: 40 }}
                 renderItem={({ item }) => (
-                    <View className="flex-row px-3 py-4 border-b border-[#0f254d]">
+                    <View className="flex-row px-3 py-4 border border-amber-200">
                         <Text className="flex-1 text-slate-200">
                             {item.month}
                         </Text>

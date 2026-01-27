@@ -20,7 +20,7 @@ export default function MessageDetail() {
         const token = await AsyncStorage.getItem("auth_token");
 
         const res = await fetch(
-            `http://192.168.1.82:8000/api/messages/${id}`,
+            `${process.env.EXPO_PUBLIC_API_URL}/messages/${id}`,
             {
                 headers: {
                     Accept: "application/json",
