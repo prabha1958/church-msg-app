@@ -1,7 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Picker } from '@react-native-picker/picker';
 import * as ExponentImagePicker from "expo-image-picker";
 import { useState } from "react";
-import { Image, Modal, Pressable, Text, TextInput, View } from "react-native";
+import { Alert, Image, Modal, Pressable, Text, TextInput, View } from "react-native";
 
 const FIELDS = [
     { label: "Profile Photo", value: "profile_photo" },
@@ -69,7 +70,7 @@ export default function RequestChangeModal({
                 } as any);
             }
 
-            await fetch(
+            const res = await fetch(
                 `${process.env.EXPO_PUBLIC_API_URL}/changes/${memberId}`,
                 {
                     method: "POST",
@@ -79,6 +80,13 @@ export default function RequestChangeModal({
                     body: form,
                 }
             );
+
+            if (!res) {
+                Alert.alert("Error", "request submission failed");
+                return;
+            } else {
+                Alert.alert("Success", "request submitted successfully");
+            }
 
             onClose();
             setField(null);
@@ -102,26 +110,19 @@ export default function RequestChangeModal({
 
                     {/* Field selector */}
                     <View className="mb-3">
-                        {FIELDS.map((f) => (
-                            <Pressable
-                                key={f.value}
-                                onPress={() => setField(f.value)}
-                                className={`py-2 px-3 rounded-md mb-1 ${field === f.value
-                                    ? "bg-amber-400"
-                                    : "bg-[#0f254d]"
-                                    }`}
-                            >
-                                <Text
-                                    className={`${field === f.value
-                                        ? "text-[#040c1f]"
-                                        : "text-slate-300"
-                                        }`}
-                                >
-                                    {f.label}
-                                </Text>
-                            </Pressable>
-                        ))}
+                        <Picker
+                            selectedValue={field}
+                            onValueChange={(itemValue, itemIndex) => setField(itemValue)}
+                        >
+                            <Picker.Item label="--select field--" value={''} />
+                            {FIELDS.map((f) => (
+                                <Picker.Item key={f.value} label={f.value} value={f.value} />
+
+                            ))}
+
+                        </Picker>
                     </View>
+
 
                     {/* Message */}
                     <TextInput
