@@ -35,6 +35,7 @@ const STORAGE_URL = process.env.EXPO_PUBLIC_STORAGE_URL;
 export default function Profile() {
     const [member, setMember] = useState<Member | null>(null);
     const [changeModalOpen, setChangeModalOpen] = useState(false);
+    const [refreshing, setRefreshing] = useState(false);
 
     const formatDate = (date?: string | Date | null) => {
         if (!date) return "—";
@@ -50,11 +51,46 @@ export default function Profile() {
         loadMember();
     }, []);
 
-    const loadMember = async () => {
-        const memberStr = await AsyncStorage.getItem("member");
-        if (!memberStr) return;
-        setMember(JSON.parse(memberStr));
+    useEffect(() => {
+        const interval = setInterval(() => {
+            loadMember();
+        }, 30000); // every 30 seconds
+
+        return () => clearInterval(interval);
+    }, []);
+
+    const refreshMessages = async () => {
+        setRefreshing(true);
+        await loadMember();   // your existing API call
+        setRefreshing(false);
     };
+
+    const loadMember = async () => {
+        const token = await AsyncStorage.getItem("auth_token");
+
+        try {
+
+            const res = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/member`, {
+                headers: {
+                    Accept: "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            const data = await res.json();
+
+            setMember(data);
+
+
+        } catch (e) {
+            console.log("Failed to load member", e);
+        }
+
+
+        //  if (!memberStr) return;
+        // setMember(JSON.parse(memberStr));
+    };
+
 
     if (!member) return null;
 
@@ -75,6 +111,9 @@ export default function Profile() {
     ]
         .filter(Boolean)
         .join(", ");
+
+
+
 
     return (
         <SafeAreaView className="flex-1 bg-[#040c1f]">

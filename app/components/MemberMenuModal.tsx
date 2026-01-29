@@ -109,6 +109,10 @@ export default function MemberMenuModal({
                             <Text>Profile</Text>
                         </TouchableOpacity>
 
+                        <TouchableOpacity onPress={() => { onClose(); router.push('/alliances') }} className="mb-9">
+                            <Text>Alliance</Text>
+                        </TouchableOpacity>
+
                         <TouchableOpacity
                             onPress={logout}
                             className="bg-red-600 py-3 rounded-lg mb-3"

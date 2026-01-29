@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "churchmsgapp",
+    "name": "csiwcr",
     "slug": "csiwcr",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "churchmsgapp",
+    "scheme": "csiwcr",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {

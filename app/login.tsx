@@ -52,6 +52,7 @@ export default function LoginScreen() {
             // ✅ store token later
             await AsyncStorage.setItem("auth_token", data.token);
             await AsyncStorage.setItem("member", JSON.stringify(data.member));
+            await AsyncStorage.setItem("alliance", JSON.stringify(data.alliance))
             const token = await AsyncStorage.getItem('auth_token')
 
             //   if (pushToken) {
