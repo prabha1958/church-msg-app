@@ -1,8 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { calculateAge } from "../../utils/date"; // adjust path
 import ImageSlider from "../components/ImageSlider";
 
 export default function AllianceDetail() {
@@ -38,7 +39,9 @@ export default function AllianceDetail() {
 
             const json = await res.json();
 
-            console.log("API RESPONSE:", json); // 🔴 IMPORTANT
+
+
+
 
             if (json.success) {
                 setData(json.data);
@@ -48,7 +51,21 @@ export default function AllianceDetail() {
         }
     };
 
+    const formatDate = (date?: string | Date | null) => {
+        if (!date) return "—";
+        const d = typeof date === "string" ? new Date(date) : date;
+        return d.toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+        });
+    };
+
+
+
     if (!data) return null;
+
+    const age = calculateAge(data.alliance.date_of_birth);
 
     const images = [
         data.alliance.profile_photo,
@@ -58,6 +75,10 @@ export default function AllianceDetail() {
     ].filter(Boolean);
 
     const fullName = [data.alliance.first_name, data.alliance.middle_name, data.alliance.last_name]
+        .filter(Boolean)
+        .join(" ");
+
+    const member_name = [data.member.family_name, data.member.first_name, data.member.last_name]
         .filter(Boolean)
         .join(" ");
 
@@ -76,6 +97,8 @@ export default function AllianceDetail() {
                 <ImageSlider images={images} />
 
                 {/* Content */}
+
+
                 <View className="p-4">
                     <Text className="text-amber-400 text-2xl font-bold">
                         {fullName}
@@ -84,16 +107,22 @@ export default function AllianceDetail() {
                     <Text className="text-slate-300 mt-1">
                         {data.alliance.alliance_type.toUpperCase()} • {data.age} yrs
                     </Text>
+                </View>
 
-                    <Info label="Profession" value={data.alliance.profession} />
-                    <Info label="Designation" value={data.alliance.designation} />
-                    <Info label="Company" value={data.alliance.company_name} />
-                    <Info label="Place" value={data.alliance.place_of_working} />
+                <View className="mx-4 mt-6 bg-[#071633] rounded-xl border border-[#102a56]">
+                    <InfoRow label="Family Name" value={data.alliance.family_name} />
+                    <InfoRow label="First Name" value={data.alliance.first_name} />
+                    <InfoRow label="Last Name" value={data.alliance.last_name} />
+                    <InfoRow label="Date of birth " value={formatDate(data.alliance.date_of_birth)} />
+                    <InfoRow label="Age" value={age} />
+                    <InfoRow label="Profession" value={data.alliance.profession} />
+                    <InfoRow label="Designation" value={data.alliance.designation} />
+                    <InfoRow label="Company" value={data.alliance.company_name} />
+                    <InfoRow label="Place" value={data.alliance.place_of_working} />
+                    <InfoRow label="Father" value={data.alliance.father_name} />
+                    <InfoRow label="Mother" value={data.alliance.mother_name} />
 
-                    <Info label="Father" value={data.alliance.father_name} />
-                    <Info label="Mother" value={data.alliance.mother_name} />
-
-                    <Info
+                    <InfoRow
                         label="Education"
                         value={data.alliance.educational_qualifications}
                     />
@@ -105,6 +134,8 @@ export default function AllianceDetail() {
                     {data.alliance.about_family && (
                         <Section title="About Family" text={data.alliance.about_family} />
                     )}
+
+                    <InfoRow label="Posted by" value={member_name} />
                 </View>
             </ScrollView>
         </SafeAreaView>
@@ -126,6 +157,28 @@ function Section({ title, text }: { title: string; text: string }) {
         <View className="mt-5">
             <Text className="text-amber-400 font-semibold">{title}</Text>
             <Text className="text-slate-300 mt-1">{text}</Text>
+        </View>
+    );
+}
+
+function InfoRow({
+    label,
+    value,
+    isLast = false,
+}: {
+    label: string;
+    value?: string | number | null;
+    isLast?: boolean;
+}) {
+    return (
+        <View
+            className={`flex-row px-4 py-3 ${isLast ? "" : "border-b border-[#102a56]"
+                }`}
+        >
+            <Text className="w-32 text-slate-400">{label}</Text>
+            <Text className="flex-1 text-amber-300">
+                {value || "—"}
+            </Text>
         </View>
     );
 }

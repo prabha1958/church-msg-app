@@ -1,5 +1,6 @@
 import { router } from "expo-router";
 import { Image, Pressable, Text, View } from "react-native";
+import { calculateAge } from "../../utils/date"; // adjust path
 
 const STORAGE = process.env.EXPO_PUBLIC_STORAGE_URL;
 
@@ -15,6 +16,8 @@ type AllianceCardProps = {
         profession: string;
         place_of_working: string;
         age: number;
+        date_of_birth: string;
+        company_name: string;
     };
     member: {
         member_name: string;
@@ -29,7 +32,16 @@ export default function AllianceCard({
         .filter(Boolean)
         .join(" ");
 
-    console.log(alliance.id)
+
+
+    function FormateDate(date_of_birth: Date): import("react").ReactNode {
+        throw new Error("Function not implemented.");
+    }
+
+    const age = calculateAge(alliance.date_of_birth);
+
+
+
 
     return (
         <Pressable
@@ -57,15 +69,18 @@ export default function AllianceCard({
                 {/* Info */}
                 <View className="flex-1 ml-3">
                     <Text className="text-amber-400 font-bold text-lg">
-                        {fullName}
+                        {fullName} -   {age} yrs
                     </Text>
 
-                    <Text className="text-slate-300 text-sm">
-                        {alliance.alliance_type} • {alliance.age} yrs
-                    </Text>
 
                     <Text className="text-slate-400 text-sm mt-1">
-                        {alliance.profession} — {alliance.place_of_working}
+                        {alliance.profession}
+                    </Text>
+                    <Text className="text-slate-400 text-sm mt-1">
+                        {alliance.company_name}
+                    </Text>
+                    <Text className="text-slate-400 text-sm mt-1">
+                        {alliance.place_of_working}
                     </Text>
 
                     <Text className="text-slate-500 text-xs mt-1">

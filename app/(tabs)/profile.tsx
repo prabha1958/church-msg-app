@@ -3,7 +3,7 @@ import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Image, Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import RequestChangeModal from "./components/RequestChangeModal";
+import RequestChangeModal from "../components/RequestChangeModal";
 
 
 type Member = {
@@ -141,7 +141,7 @@ export default function Profile() {
                         source={
                             member.profile_photo
                                 ? { uri: `${STORAGE_URL}/${member.profile_photo}` }
-                                : require("../assets/images/avatar.png")
+                                : require("../../assets/images/avatar.png")
                         }
                         style={{ width: 96, height: 96 }}
                         className="rounded-full border-2 border-amber-400"
