@@ -3,10 +3,47 @@ import { Image, Text, TouchableOpacity, View } from "react-native";
 
 export default function MessageCard({ item }: { item: any }) {
 
-    const PROFILE_BASE_URL = "http://192.168.1.82:8000/storage";
     const router = useRouter();
+    const type = String(item.message_type || "general").toLowerCase();
 
+    function getContainerBg(type: string) {
+        switch (type) {
+            case "birthday":
+                return "bg-purple-700";
+            case "anniversary":
+                return "bg-emerald-700";
+            case "changes":
+                return "bg-amber-950";
+            case "otp":
+                return "bg-red-600";
+            default:
+                return "bg-[#071633]";
+        }
+    }
 
+    function getTitleColor(type: string) {
+        switch (type) {
+            case "changes":
+                return "text-amber-300";
+            default:
+                return "text-white";
+        }
+    }
+
+    function getBodyColor(type: string) {
+        switch (type) {
+            case "changes":
+                return "text-amber-300";
+            case "birthday":
+                return "text-purple-100";
+            case "anniversary":
+                return "text-emerald-100";
+            case "otp":
+                return "text-red-100";
+            default:
+                return "text-slate-300";
+        }
+    }
 
     return (
 
@@ -15,7 +52,7 @@ export default function MessageCard({ item }: { item: any }) {
 
         >
 
-            <View className="bg-blue-700 rounded-xl p-4 mb-3 shadow-sm">
+            <View className={`${getContainerBg(type)} rounded-xl p-4 mb-3 shadow-sm`}>
 
                 <Text className="text-xs text-gray-400 text-right">
                     {new Date(item.published_at).toDateString()}
@@ -27,7 +64,7 @@ export default function MessageCard({ item }: { item: any }) {
                     <Image
                         source={
                             item?.image_path
-                                ? { uri: `${PROFILE_BASE_URL}/${item.image_path}` }
+                                ? { uri: `${process.env.EXPO_PUBLIC_STORAGE_URL}/${item.image_path}` }
                                 : require("../../assets/images/avatar.png")
                         }
                         className="w-20 h-20"
@@ -36,13 +73,13 @@ export default function MessageCard({ item }: { item: any }) {
                     />
                 }
 
-                <Text className="text-[#d0d0f7] font-semibold text-base mb-1">
+                <Text className={`${getTitleColor(type)} font-semibold text-base mb-1`}>
                     {item.title}
                 </Text>
 
                 <Text
-                    className="text-blue-200 text-sm mb-2"
-                    numberOfLines={3}
+                    className={`${getBodyColor(type)} text-sm mb-2`}
+                    numberOfLines={2}
                 >
                     {item.body}
                 </Text>

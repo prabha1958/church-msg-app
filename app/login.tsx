@@ -41,7 +41,11 @@ export default function LoginScreen() {
 
             });
 
-
+            if (!res.ok) {
+                const text = await res.text();
+                console.log(text);
+                throw new Error("Login failed");
+            }
             const data = await res.json();
 
             if (!res.ok) {
@@ -83,6 +87,8 @@ export default function LoginScreen() {
             setLoading(false);
         }
     };
+
+
 
     return (
         <View className="flex-1 justify-center bg-blue-50 px-6">

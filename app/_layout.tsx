@@ -25,6 +25,7 @@ export default function RootLayout() {
     checkAuth();
   }, []);
 
+
   //  Notifications.setNotificationHandler({
   //  handleNotification: async () => ({
   //  shouldShowAlert: true,

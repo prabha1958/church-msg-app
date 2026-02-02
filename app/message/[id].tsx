@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const IMAGE_BASE_URL = "http://192.168.1.82:8000/storage";
+
 
 export default function MessageDetail() {
     const { id } = useLocalSearchParams<{ id: string }>();
@@ -81,7 +81,7 @@ export default function MessageDetail() {
                     {message.image_path && (
                         <Image
                             source={{
-                                uri: `${IMAGE_BASE_URL}/${message.image_path}`,
+                                uri: `${process.env.EXPO_PUBLIC_STORAGE_URL}/${message.image_path}`,
                             }}
                             className="w-full h-56 rounded-xl mb-4"
                             resizeMode="cover"

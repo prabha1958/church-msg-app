@@ -1,9 +1,11 @@
+import { syncSessionFromServer } from "@/utils/syncSessionFromServer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, Image, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, FlatList, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MemberMenuModal from "../components/MemberMenuModal";
 import MessageCard from "../components/MessageCard";
+
 
 
 type Message = {
@@ -37,9 +39,15 @@ export default function InboxScreen() {
                 },
             });
 
+            if (!res.ok) {
+                const text = await res.text();
+                console.log("Messages API error:", text);
+                return;
+            }
 
             const data = await res.json();
             setMessages(data.data ?? []);
+
 
 
         } catch (e) {
@@ -52,6 +60,7 @@ export default function InboxScreen() {
     useEffect(() => {
         const interval = setInterval(() => {
             fetchMessages();
+            syncSessionFromServer();
         }, 30000); // every 30 seconds
 
         return () => clearInterval(interval);
@@ -73,6 +82,8 @@ export default function InboxScreen() {
         );
     }
 
+
+
     return (
         <SafeAreaView className="flex-1 bg-[#040c1f]">
 
@@ -87,11 +98,7 @@ export default function InboxScreen() {
                 </TouchableOpacity>
 
                 {/* Right: Church Logo */}
-                <Image
-                    source={require("../../assets/images/church-logo.png")}
-                    className="w-8 h-8"
-                    resizeMode="contain"
-                />
+
             </View>
 
             <MemberMenuModal visible={menuOpen}

@@ -1,3 +1,4 @@
+import { syncSessionFromServer } from "@/utils/syncSessionFromServer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Tabs } from "expo-router";
 import { useEffect, useState } from "react";
@@ -9,6 +10,44 @@ const STORAGE = process.env.EXPO_PUBLIC_STORAGE_URL;
 
 export default function TabLayout() {
     const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
+    const [canViewAlliance, setCanViewAlliance] = useState(false);
+
+    function isAllianceActive(paymentDate?: string | null): boolean {
+        if (!paymentDate) return false;
+
+        const paidAt = new Date(paymentDate);
+        if (isNaN(paidAt.getTime())) return false;
+
+        const expiry = new Date(paidAt);
+        expiry.setMonth(expiry.getMonth() + 6);
+
+        return expiry >= new Date();
+    }
+
+    useEffect(() => {
+        checkAllianceAccess();
+    }, []);
+
+    const checkAllianceAccess = async () => {
+        const allianceStr = await AsyncStorage.getItem("alliance");
+
+        if (!allianceStr) {
+            setCanViewAlliance(false);
+            return;
+        }
+
+        const alliance = JSON.parse(allianceStr);
+        if (!alliance) {
+            setCanViewAlliance(false);
+            return;
+
+        } else {
+            const allowed = isAllianceActive(alliance.payment_date);
+            setCanViewAlliance(allowed);
+        }
+
+    };
+
 
     useEffect(() => {
         loadProfilePhoto();
@@ -21,6 +60,16 @@ export default function TabLayout() {
         const member = JSON.parse(memberStr);
         setProfilePhoto(member.profile_photo ?? null);
     };
+
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+
+            syncSessionFromServer();
+        }, 30000); // every 30 seconds
+
+        return () => clearInterval(interval);
+    }, []);
 
 
 
@@ -39,11 +88,11 @@ export default function TabLayout() {
             }}
         >
             <Tabs.Screen
-                name="messages"
+                name="inbox"
                 options={{
                     title: "Messages",
                     tabBarIcon: ({ color, size }) => (
-                        <TabIcon source={require("../../assets/images/church-logo.png")} />
+                        <TabIcon source={require("../../assets/images/mailbox.png")} />
                     ),
                 }}
             />
@@ -53,7 +102,7 @@ export default function TabLayout() {
                 options={{
                     title: "Subscription",
                     tabBarIcon: () => (
-                        <TabIcon source={require("../../assets/images/church-logo.png")} />
+                        <TabIcon source={require("../../assets/images/dollor.png")} />
                     ),
                 }}
             />
@@ -62,11 +111,13 @@ export default function TabLayout() {
                 name="alliances"
                 options={{
                     title: "Alliances",
+                    href: canViewAlliance ? undefined : null, // ✅ hides tab completely
                     tabBarIcon: () => (
-                        <TabIcon source={require("../../assets/images/church-logo.png")} />
+                        <TabIcon source={require("../../assets/images/alliance.png")} />
                     ),
                 }}
             />
+
 
             <Tabs.Screen
                 name="profile"
