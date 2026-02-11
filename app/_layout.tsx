@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Stack, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
+import { View } from "react-native";
 import "../global.css";
 
 export default function RootLayout() {
@@ -54,10 +55,10 @@ export default function RootLayout() {
 
   // ✅ ALWAYS return Stack immediately
   return (
-    <>
+    <View className="flex-1 bg-slate-950">
       <StatusBar style="light" backgroundColor="#272757" />
       <Stack screenOptions={{ headerShown: false }} />
-    </>
+    </View>
   )
 
 

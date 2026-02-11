@@ -95,7 +95,7 @@ export default function AllianceDetail() {
 
                 {/* Images */}
                 <ImageSlider images={images} />
-
+                <Text className="text-sm text-gray-300 text-right">slide to see more photos</Text>
                 {/* Content */}
 
 

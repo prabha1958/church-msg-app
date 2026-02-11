@@ -1,8 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { Image, ImageBackground, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Image, ImageBackground, Linking, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Loader from "../components/Loader";
 
 
 
@@ -11,30 +12,55 @@ export default function MessageDetail() {
     const router = useRouter();
     const [message, setMessage] = useState<any>(null);
     const [menuOpen, setMenuOpen] = useState(false);
+    const [loading, setLoading] = useState(true);
 
 
     useEffect(() => {
-        fetchMessage();
-    }, []);
+        let mounted = true;
 
-    const fetchMessage = async () => {
-        const token = await AsyncStorage.getItem("auth_token");
+        const fetchMessage = async () => {
+            try {
 
-        const res = await fetch(
-            `${process.env.EXPO_PUBLIC_API_URL}/messages/${id}`,
-            {
-                headers: {
-                    Accept: "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
+                setLoading(true)
+                const token = await AsyncStorage.getItem("auth_token");
+
+                const res = await fetch(
+                    `${process.env.EXPO_PUBLIC_API_URL}/messages/${id}`,
+                    {
+                        headers: {
+                            Accept: "application/json",
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+
+                const data = await res.json();
+                if (mounted) setMessage(data);
+
+
+
+
+            } finally {
+                if (mounted) setLoading(false);
             }
+        };
+
+        fetchMessage();
+
+        return () => {
+            mounted = false;
+        };
+    }, [id]);
+
+    if (loading) {
+        return (
+            <View className="flex-1 bg-[#040c1f]">
+                <Loader />
+            </View>
         );
+    }
 
-        const data = await res.json();
-        setMessage(data);
-    };
 
-    if (!message) return null;
 
     const type = String(message.message_type || "general").toLowerCase();
 
@@ -47,7 +73,7 @@ export default function MessageDetail() {
             case "changes":
                 return "bg-amber-950  py-10 px-4 rounded-2xl";
             case "otp":
-                return "bg-red-600  py-10 px-4 rounded-2xl";
+                return "bg-[#04414a]  py-10 px-4 rounded-2xl";
             default:
                 return "bg-[#071633]  py-10 px-4 rounded-2xl";
         }
@@ -91,10 +117,14 @@ export default function MessageDetail() {
             : require("../../assets/images/anniversary.png");
 
 
-
+    <View className="flex-1 bg-slate-950">
+        <Loader />
+    </View>
 
     return (
+
         <SafeAreaView className="flex-1  bg-[#040c1f]">
+
             {/* Header */}
             <View className="bg-[#272757] px-4 py-3 flex-row items-center justify-between">
 
@@ -204,6 +234,27 @@ export default function MessageDetail() {
                                 <Text className="text-xl font-bold  text-amber-50 text-right">{message.from_name}</Text>
                                 <Text className="text-blue-50 text-right">{message.from}</Text>
                             </View>
+
+                            {message.attachment_path && (
+                                <Pressable
+                                    onPress={() =>
+                                        Linking.openURL(`${process.env.EXPO_PUBLIC_STORAGE_URL}/${message.attachment_path}`)
+                                    }
+                                    style={{
+                                        backgroundColor: "#16a34a",
+                                        padding: 12,
+                                        borderRadius: 8,
+                                        alignItems: "center",
+                                        marginTop: 8,
+                                    }}
+                                >
+                                    <Text style={{ color: "#fff", fontWeight: "600" }}>
+                                        Download Receipt
+                                    </Text>
+                                </Pressable>
+                            )}
+
+
 
 
                         </>

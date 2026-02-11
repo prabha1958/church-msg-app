@@ -14,6 +14,7 @@ type Message = {
     body: string;
     published_at: string;
     image_path: string;
+    attachment_path: string;
 };
 
 export default function InboxScreen() {

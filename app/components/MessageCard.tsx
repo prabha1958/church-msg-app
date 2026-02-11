@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { Image, Linking, Pressable, Text, TouchableOpacity, View } from "react-native";
 
 export default function MessageCard({ item }: { item: any }) {
 
@@ -15,7 +15,7 @@ export default function MessageCard({ item }: { item: any }) {
             case "changes":
                 return "bg-amber-950";
             case "otp":
-                return "bg-red-600";
+                return "bg-[#04414a]";
             default:
                 return "bg-[#071633]";
         }
@@ -83,7 +83,24 @@ export default function MessageCard({ item }: { item: any }) {
                 >
                     {item.body}
                 </Text>
-
+                {item.attachment_path && (
+                    <Pressable
+                        onPress={() =>
+                            Linking.openURL(`${process.env.EXPO_PUBLIC_STORAGE_URL}/${item.attachment_path}`)
+                        }
+                        style={{
+                            backgroundColor: "#16a34a",
+                            padding: 12,
+                            borderRadius: 8,
+                            alignItems: "center",
+                            marginTop: 8,
+                        }}
+                    >
+                        <Text style={{ color: "#fff", fontWeight: "600" }}>
+                            Download Receipt
+                        </Text>
+                    </Pressable>
+                )}
 
             </View>
         </TouchableOpacity>

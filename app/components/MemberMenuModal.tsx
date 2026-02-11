@@ -75,7 +75,7 @@ export default function MemberMenuModal({
                 {/* Drawer */}
                 <Animated.View
                     style={{ transform: [{ translateX }] }}
-                    className="bg-white h-full px-6 py-40"
+                    className="bg-[#34088c] h-full px-6 py-40"
                 // width must be inline style
                 >
                     <View style={{ width: DRAWER_WIDTH }}>
@@ -93,29 +93,27 @@ export default function MemberMenuModal({
 
                         </View>
 
-                        <Text className="text-xl font-semibold text-blue-900 mb-1">
+                        <Text className="text-xl font-semibold text-blue-50 mb-1">
                             {member?.family_name ?? "Member"}  {member?.first_name ?? "Member"}  {member?.last_name ?? "Member"}
                         </Text>
 
-                        <Text className="text-gray-500 mb-6 text-sm font-bold">
+                        <Text className="text-gray-50 mb-6 text-sm font-bold">
                             Member ID: {member?.id ?? "-"}
                         </Text>
 
-                        <TouchableOpacity onPress={() => { onClose(); router.push('/subscription') }} className="mb-9">
-                            <Text>Subscription</Text>
+                        <TouchableOpacity onPress={() => { onClose(); router.push('/pastors') }} className="mb-9">
+                            <Text className="text-xl text-blue-50">Our Clergy</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => { onClose(); router.push('/profile') }} className="mb-9">
-                            <Text>Profile</Text>
+                        <TouchableOpacity onPress={() => { onClose(); router.push('/events') }} className="mb-9">
+                            <Text className="text-xl text-blue-50">Events</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => { onClose(); router.push('/alliances') }} className="mb-9">
-                            <Text>Alliance</Text>
-                        </TouchableOpacity>
+
 
                         <TouchableOpacity
                             onPress={logout}
-                            className="bg-red-600 py-3 rounded-lg mb-3"
+                            className="bg-[#8c4808] py-3 rounded-lg mb-3"
                         >
                             <Text className="text-white text-center font-semibold">
                                 Logout
