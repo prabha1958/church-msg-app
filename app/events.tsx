@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { apiFetch } from "@/lib/api";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -36,17 +37,10 @@ export default function Events() {
         const fetchEvents = async () => {
             try {
 
-                setLoading(true)
-                const token = await AsyncStorage.getItem("auth_token");
+                setLoading(true);
 
-                const res = await fetch(
-                    `${process.env.EXPO_PUBLIC_API_URL}/events`,
-                    {
-                        headers: {
-                            Accept: "application/json",
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
+                const res = await apiFetch(
+                    `${process.env.EXPO_PUBLIC_API_URL}/events`
                 );
 
                 const data = await res.json();
@@ -72,16 +66,6 @@ export default function Events() {
             <View className="flex-1 bg-[#040c1f]">
                 <Loader />
             </View>
-        );
-    }
-
-
-
-    if (loading) {
-        return (
-            <SafeAreaView className="flex-1 justify-center items-center bg-[#F4F6FB]">
-                <ActivityIndicator size="large" color="#272757" />
-            </SafeAreaView>
         );
     }
 

@@ -18,3 +18,15 @@ export function calculateAge(dob: string | null | undefined): number | null {
 
     return age;
 }
+
+export function formatDate(date?: string | Date | null): string {
+    if (!date) return "—";
+    const d = typeof date === "string" ? new Date(date) : date;
+    if (!(d instanceof Date) || isNaN(d.getTime())) return "—";
+
+    return d.toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+    });
+}

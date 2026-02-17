@@ -2,15 +2,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { registerForPushNotifications } from "../lib/registerForPush";
+
 
 
 export default function LoginScreen() {
     const [memberId, setMemberId] = useState("");
     const [mobile, setMobile] = useState("");
     const [loading, setLoading] = useState(false);
-    const router = useRouter()
-    const pushToken = registerForPushNotifications();
+    const router = useRouter();
+
 
 
 
@@ -41,49 +41,36 @@ export default function LoginScreen() {
 
             });
 
-            if (!res.ok) {
-                const text = await res.text();
-                console.log(text);
-                throw new Error("Login failed");
-            }
+
             const data = await res.json();
+
+
 
             if (!res.ok) {
                 Alert.alert("Login failed", data.message || "Invalid credentials");
                 return;
             }
 
-            // ✅ store token later
             await AsyncStorage.setItem("auth_token", data.token);
             await AsyncStorage.setItem("member", JSON.stringify(data.member));
-            await AsyncStorage.setItem("alliance", JSON.stringify(data.alliance))
-            const token = await AsyncStorage.getItem('auth_token')
+            await AsyncStorage.setItem("alliance", JSON.stringify(data.alliance));
 
-            //   if (pushToken) {
-            //     await fetch(`${process.env.EXPO_PUBLIC_API_URL}/device-token`, {
-            //       method: "POST",
-            //     headers: {
-            //       Accept: "application/json",
-            //     Authorization: `Bearer ${token}`,
-            //   "Content-Type": "application/json",
-            // },
-            // body: JSON.stringify({
-            //   token: pushToken,
-            //  }),
-            // });
-            //  }
-            router.replace('/inbox');
+
+
+            router.replace("/inbox");
 
 
 
 
 
-            Alert.alert("Success", "Logged in successfully");
-        } catch (e) {
-            Alert.alert("Error", "Server error");
 
+        } catch (e: any) {
+            console.log("LOGIN ERROR =", e);
+            Alert.alert(
+                "Error",
+                e?.message || "Something went wrong. Please check your connection and try again."
+            );
         } finally {
-
             setLoading(false);
         }
     };

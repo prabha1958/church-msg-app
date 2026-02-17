@@ -75,7 +75,9 @@ export default function TabLayout() {
 
 
     return (
+
         <Tabs
+
             screenOptions={{
                 headerShown: false,
                 tabBarStyle: {
@@ -86,6 +88,7 @@ export default function TabLayout() {
                 tabBarActiveTintColor: "#fbbf24", // amber
                 tabBarInactiveTintColor: "#94a3b8",
             }}
+
         >
             <Tabs.Screen
                 name="inbox"
@@ -129,6 +132,7 @@ export default function TabLayout() {
                 }}
             />
         </Tabs>
+
     );
 }
 
@@ -152,6 +156,7 @@ function ProfileTabIcon({ photo }: { photo: string | null }) {
                 overflow: "hidden",
                 borderWidth: 1,
                 borderColor: "#fbbf24",
+
             }}
         >
             <Image

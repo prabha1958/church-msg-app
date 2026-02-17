@@ -1,11 +1,11 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import Constants from "expo-constants";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 
-export async function registerForPushNotifications() {
+export async function registerForPushNotificationsAsync() {
     if (!Device.isDevice) {
-        alert("Push notifications require a physical device");
+        console.log("Must use physical device");
         return null;
     }
 
@@ -20,20 +20,32 @@ export async function registerForPushNotifications() {
     }
 
     if (finalStatus !== "granted") {
-        alert("Permission for notifications not granted");
+        console.log("Notification permission denied");
         return null;
     }
 
-    const token = (await Notifications.getExpoPushTokenAsync()).data;
+    const projectId =
+        Constants.expoConfig?.extra?.eas?.projectId ||
+        Constants.easConfig?.projectId;
+
+    if (!projectId) {
+        console.log("Project ID missing");
+        return null;
+    }
+
+    const tokenData = await Notifications.getExpoPushTokenAsync({
+        projectId,
+    });
 
     if (Platform.OS === "android") {
         await Notifications.setNotificationChannelAsync("default", {
             name: "default",
             importance: Notifications.AndroidImportance.MAX,
+            sound: "default",
         });
     }
 
-    await AsyncStorage.setItem("push_token", token);
+    console.log("Expo Push Token:", tokenData.data);
 
-    return token;
+    return tokenData.data;
 }

@@ -1,15 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { apiFetch } from "@/lib/api";
 
 export async function syncSessionFromServer() {
-    const token = await AsyncStorage.getItem("auth_token");
-    if (!token) return;
-
-    const res = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/member/session`, {
-        headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-        },
-    });
+    const res = await apiFetch(`${process.env.EXPO_PUBLIC_API_URL}/member/session`);
 
     if (!res.ok) {
         const text = await res.text();

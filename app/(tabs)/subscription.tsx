@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { apiFetch } from "@/lib/api";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { FlatList, Text, View } from "react-native";
@@ -63,19 +64,14 @@ export default function Subscription() {
 
     const fetchSubscription = async () => {
         try {
-            const token = await AsyncStorage.getItem("auth_token");
             const memberStr = await AsyncStorage.getItem("member");
             if (!memberStr) throw new Error("Member missing");
 
             const member = JSON.parse(memberStr);
 
-            const res = await fetch(
+            const res = await apiFetch(
                 `${process.env.EXPO_PUBLIC_API_URL}/subscriptions/${member.id}`,
                 {
-                    headers: {
-                        Accept: "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
                 }
             );
             const json = await res.json();

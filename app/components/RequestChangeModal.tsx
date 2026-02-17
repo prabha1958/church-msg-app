@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { apiFetch } from "@/lib/api";
 import { Picker } from '@react-native-picker/picker';
 import * as ExponentImagePicker from "expo-image-picker";
 import { useState } from "react";
@@ -47,16 +48,14 @@ export default function RequestChangeModal({
     };
 
     const submit = async () => {
-
-        if (!field || !message.trim()) return;
-
-
+        if (!field || !message.trim()) {
+            Alert.alert("Missing details", "Please select a field and explain the change required.");
+            return;
+        }
 
         setSubmitting(true);
 
         try {
-            const token = await AsyncStorage.getItem("auth_token");
-
             const form = new FormData();
             form.append("member_id", String(memberId));
             form.append("chng_field", field);
@@ -70,31 +69,37 @@ export default function RequestChangeModal({
                 } as any);
             }
 
-            const res = await fetch(
+            const res = await apiFetch(
                 `${process.env.EXPO_PUBLIC_API_URL}/changes/${memberId}`,
                 {
                     method: "POST",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
                     body: form,
                 }
             );
 
-            if (!res) {
-                Alert.alert("Error", "request submission failed");
+            if (!res.ok) {
+                let errorMessage = "Request submission failed";
+                try {
+                    const text = await res.text();
+                    if (text) {
+                        errorMessage = text;
+                    }
+                } catch {
+                    // ignore body parsing errors and fall back to generic error
+                }
+                Alert.alert("Error", errorMessage);
                 return;
-            } else {
-                Alert.alert("Success", "request submitted successfully");
             }
+
+            Alert.alert("Success", "Request submitted successfully");
 
             onClose();
             setField(null);
             setMessage("");
             setImage(null);
-
         } catch (e) {
             console.log("Change request failed", e);
+            Alert.alert("Error", "Something went wrong while submitting your request. Please try again.");
         } finally {
             setSubmitting(false);
         }

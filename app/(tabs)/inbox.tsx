@@ -1,5 +1,5 @@
 import { syncSessionFromServer } from "@/utils/syncSessionFromServer";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { apiFetch } from "@/lib/api";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -30,15 +30,7 @@ export default function InboxScreen() {
 
     const fetchMessages = async () => {
         try {
-            const token = await AsyncStorage.getItem("auth_token");
-
-
-            const res = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/messages`, {
-                headers: {
-                    Accept: "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const res = await apiFetch(`${process.env.EXPO_PUBLIC_API_URL}/messages`);
 
             if (!res.ok) {
                 const text = await res.text();

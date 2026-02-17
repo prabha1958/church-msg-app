@@ -1,9 +1,13 @@
+import { apiFetch } from "@/lib/api";
+import { formatDate } from "@/utils/date";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Image, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import InfoRow from "../components/InfoRow";
 import Loader from "../components/Loader";
+import Section from "../components/Section";
 
 export default function PastorDetail() {
     const params = useLocalSearchParams<{ id?: string | string[] }>();
@@ -25,17 +29,10 @@ export default function PastorDetail() {
         const fetchMessage = async () => {
             try {
 
-                setLoading(true)
-                const token = await AsyncStorage.getItem("auth_token");
+                setLoading(true);
 
-                const res = await fetch(
-                    `${process.env.EXPO_PUBLIC_API_URL}/pastors/${pastorId}`,
-                    {
-                        headers: {
-                            Accept: "application/json",
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
+                const res = await apiFetch(
+                    `${process.env.EXPO_PUBLIC_API_URL}/pastors/${pastorId}`
                 );
 
                 const data = await res.json();
@@ -63,18 +60,6 @@ export default function PastorDetail() {
             </View>
         );
     }
-
-    const formatDate = (date?: string | Date | null) => {
-        if (!date) return "—";
-        const d = typeof date === "string" ? new Date(date) : date;
-        return d.toLocaleDateString("en-IN", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-        });
-    };
-
-
 
     if (!data) return null;
 
@@ -119,61 +104,19 @@ export default function PastorDetail() {
                 </View>
 
                 <View className="mx-4 mt-6 bg-[#071633] rounded-xl border border-[#102a56]">
+                    <InfoRow
+                        label="Date of joining"
+                        value={formatDate(data.date_of_joining)}
+                    />
 
-                    <InfoRow label="Date of joining " value={formatDate(data.date_of_joining)} />
-
-
-                    {data.past_service_desctiption && (
-                        <Section title="About the pastor" text={data.past_service_description} />
+                    {data.past_service_description && (
+                        <Section
+                            title="About the pastor"
+                            text={data.past_service_description}
+                        />
                     )}
-
-                    <Text className="text-amber-100 text-sm">{data.past_service_description}</Text>
-
-
                 </View>
             </ScrollView>
         </SafeAreaView>
     );
 }
-
-function Info({ label, value }: { label: string; value?: string }) {
-    if (!value) return null;
-    return (
-        <View className="mt-3">
-            <Text className="text-slate-400 text-sm">{label}</Text>
-            <Text className="text-slate-200">{value}</Text>
-        </View>
-    );
-}
-
-function Section({ title, text }: { title: string; text: string }) {
-    return (
-        <View className="mt-5">
-            <Text className="text-amber-400 font-semibold">{title}</Text>
-            <Text className="text-slate-300 mt-1">{text}</Text>
-        </View>
-    );
-}
-
-function InfoRow({
-    label,
-    value,
-    isLast = false,
-}: {
-    label: string;
-    value?: string | number | null;
-    isLast?: boolean;
-}) {
-    return (
-        <View
-            className={`flex-row px-4 py-3 ${isLast ? "" : "border-b border-[#102a56]"
-                }`}
-        >
-            <Text className="w-32 text-slate-400">{label}</Text>
-            <Text className="flex-1 text-amber-300">
-                {value || "—"}
-            </Text>
-        </View>
-    );
-}
-

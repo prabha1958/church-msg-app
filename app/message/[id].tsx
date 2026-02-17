@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { apiFetch } from "@/lib/api";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Image, ImageBackground, Linking, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
@@ -20,26 +21,21 @@ export default function MessageDetail() {
 
         const fetchMessage = async () => {
             try {
+                setLoading(true);
 
-                setLoading(true)
-                const token = await AsyncStorage.getItem("auth_token");
-
-                const res = await fetch(
-                    `${process.env.EXPO_PUBLIC_API_URL}/messages/${id}`,
-                    {
-                        headers: {
-                            Accept: "application/json",
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
+                const res = await apiFetch(
+                    `${process.env.EXPO_PUBLIC_API_URL}/messages/${id}`
                 );
+
+                if (!res.ok) {
+                    console.log("Failed to load message detail. Status:", res.status);
+                    return;
+                }
 
                 const data = await res.json();
                 if (mounted) setMessage(data);
-
-
-
-
+            } catch (e) {
+                console.log("Failed to load message detail", e);
             } finally {
                 if (mounted) setLoading(false);
             }
@@ -115,12 +111,6 @@ export default function MessageDetail() {
         isBirthday
             ? require("../../assets/images/birthday.png")
             : require("../../assets/images/anniversary.png");
-
-
-    <View className="flex-1 bg-slate-950">
-        <Loader />
-    </View>
-
     return (
 
         <SafeAreaView className="flex-1  bg-[#040c1f]">

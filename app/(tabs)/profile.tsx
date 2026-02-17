@@ -1,9 +1,12 @@
+import { apiFetch } from "@/lib/api";
+import { formatDate } from "@/utils/date";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Image, Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import RequestChangeModal from "../components/RequestChangeModal";
+import InfoRow from "../components/InfoRow";
 
 
 type Member = {
@@ -37,16 +40,6 @@ export default function Profile() {
     const [changeModalOpen, setChangeModalOpen] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
 
-    const formatDate = (date?: string | Date | null) => {
-        if (!date) return "—";
-        const d = typeof date === "string" ? new Date(date) : date;
-        return d.toLocaleDateString("en-IN", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-        });
-    };
-
     useEffect(() => {
         loadMember();
     }, []);
@@ -66,16 +59,8 @@ export default function Profile() {
     };
 
     const loadMember = async () => {
-        const token = await AsyncStorage.getItem("auth_token");
-
         try {
-
-            const res = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/member`, {
-                headers: {
-                    Accept: "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const res = await apiFetch(`${process.env.EXPO_PUBLIC_API_URL}/member`);
 
             const data = await res.json();
 
@@ -196,28 +181,5 @@ export default function Profile() {
                 />
             </ScrollView>
         </SafeAreaView>
-    );
-}
-
-/* ---------- Reusable Row Component ---------- */
-function InfoRow({
-    label,
-    value,
-    isLast = false,
-}: {
-    label: string;
-    value?: string | number | null;
-    isLast?: boolean;
-}) {
-    return (
-        <View
-            className={`flex-row px-4 py-3 ${isLast ? "" : "border-b border-[#102a56]"
-                }`}
-        >
-            <Text className="w-32 text-slate-400">{label}</Text>
-            <Text className="flex-1 text-amber-300">
-                {value || "—"}
-            </Text>
-        </View>
     );
 }

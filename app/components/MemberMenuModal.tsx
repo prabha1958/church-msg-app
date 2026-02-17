@@ -75,7 +75,7 @@ export default function MemberMenuModal({
                 {/* Drawer */}
                 <Animated.View
                     style={{ transform: [{ translateX }] }}
-                    className="bg-[#34088c] h-full px-6 py-40"
+                    className="bg-[#06237a] h-full px-6 py-40"
                 // width must be inline style
                 >
                     <View style={{ width: DRAWER_WIDTH }}>
@@ -83,17 +83,17 @@ export default function MemberMenuModal({
                             <Image
                                 source={
                                     member?.profile_photo
-                                        ? { uri: `${process.envEXPO_PUBLIC_STORAGE_URL}/${member.profile_photo}` }
+                                        ? { uri: `${process.env.EXPO_PUBLIC_STORAGE_URL}/${member.profile_photo}` }
                                         : require("../../assets/images/avatar.png")
                                 }
                                 className="w-20 h-20 rounded-full"
-                                resizeMode="contain"
+
 
                             />
 
                         </View>
 
-                        <Text className="text-xl font-semibold text-blue-50 mb-1">
+                        <Text className="text-xl font-semibold text-[#b09407] mb-1">
                             {member?.family_name ?? "Member"}  {member?.first_name ?? "Member"}  {member?.last_name ?? "Member"}
                         </Text>
 
@@ -101,12 +101,23 @@ export default function MemberMenuModal({
                             Member ID: {member?.id ?? "-"}
                         </Text>
 
-                        <TouchableOpacity onPress={() => { onClose(); router.push('/pastors') }} className="mb-9">
-                            <Text className="text-xl text-blue-50">Our Clergy</Text>
+
+                        <TouchableOpacity onPress={() => { onClose(); router.push('/inbox') }} className="mt-10 border border-[#4d93f0] rounded-xl">
+                            <Text className="text-xl text-blue-50 text-center">Messages</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => { onClose(); router.push('/subscription') }} className="mt-10 border border-[#4d93f0] rounded-xl">
+                            <Text className="text-xl text-blue-50 text-center">Subscriptions</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => { onClose(); router.push('/profile') }} className="mt-10 border border-[#4d93f0] rounded-xl">
+                            <Text className="text-xl text-blue-50 text-center">Profile</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => { onClose(); router.push('/events') }} className="mb-9">
-                            <Text className="text-xl text-blue-50">Events</Text>
+                        <TouchableOpacity onPress={() => { onClose(); router.push('/pastors') }} className="mt-10 border border-[#4d93f0] rounded-xl">
+                            <Text className="text-xl text-blue-50 text-center">Our Clergy</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={() => { onClose(); router.push('/events') }} className="mb-9 mt-6 border border-[#4d93f0] rounded-xl">
+                            <Text className="text-xl text-blue-50 text-center">Events</Text>
                         </TouchableOpacity>
 
 
