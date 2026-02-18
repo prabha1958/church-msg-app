@@ -1,16 +1,17 @@
 import { apiFetch } from "@/lib/api";
 import { calculateAge, formatDate } from "@/utils/date";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import AppHeader from "../components/AppHeader";
 import ImageSlider from "../components/ImageSlider";
 import InfoRow from "../components/InfoRow";
 import Section from "../components/Section";
 
 export default function AllianceDetail() {
     const params = useLocalSearchParams<{ id?: string | string[] }>();
+    const [menuOpen, setMenuOpen] = useState(false);
     const [data, setData] = useState<any>(null);
     const allianceId =
         typeof params.id === "string"
@@ -75,6 +76,8 @@ export default function AllianceDetail() {
                 >
                     ←
                 </Text>
+
+                <AppHeader title={fullName} onMenuPress={() => setMenuOpen(true)} />
 
                 {/* Images */}
                 <ImageSlider images={images} />

@@ -1,12 +1,13 @@
 import { apiFetch } from "@/lib/api";
 import { formatDate } from "@/utils/date";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Image, Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import RequestChangeModal from "../components/RequestChangeModal";
+import AppHeader from "../components/AppHeader";
 import InfoRow from "../components/InfoRow";
+import Loader from "../components/Loader";
+import MemberMenuModal from "../components/MemberMenuModal";
+import RequestChangeModal from "../components/RequestChangeModal";
 
 
 type Member = {
@@ -39,6 +40,9 @@ export default function Profile() {
     const [member, setMember] = useState<Member | null>(null);
     const [changeModalOpen, setChangeModalOpen] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
+    const [menuOpen, setMenuOpen] = useState(false);
+    const [loading, setLoading] = useState(true);
+
 
     useEffect(() => {
         loadMember();
@@ -60,14 +64,17 @@ export default function Profile() {
 
     const loadMember = async () => {
         try {
+            setLoading(true)
             const res = await apiFetch(`${process.env.EXPO_PUBLIC_API_URL}/member`);
 
             const data = await res.json();
 
             setMember(data);
+            setLoading(false)
 
 
         } catch (e) {
+            setLoading(false)
             console.log("Failed to load member", e);
         }
 
@@ -77,54 +84,48 @@ export default function Profile() {
     };
 
 
-    if (!member) return null;
+    if (loading) {
+        return (
+            <View className="flex-1 bg-[#040c1f]">
+                <Loader />
+            </View>
+        );
+    }
 
     const fullName = [
-        member.first_name,
-        member.middle_name,
-        member.last_name,
+        member?.first_name,
+        member?.middle_name,
+        member?.last_name,
     ]
         .filter(Boolean)
         .join(" ");
 
     const address = [
-        member.address_flat_no,
-        member.address_premises,
-        member.address_area,
-        member.address_landmark,
-        member.address_pin,
+        member?.address_flat_no,
+        member?.address_premises,
+        member?.address_area,
+        member?.address_landmark,
+        member?.address_pin,
     ]
         .filter(Boolean)
         .join(", ");
 
 
-
+    const logo = require("../../assets/images/icon.png")
 
     return (
         <SafeAreaView className="flex-1 bg-[#040c1f]">
-            {/* Header */}
-            <View className="px-4 py-4 border-b border-[#102a56] bg-[#071633]">
-                <Text
-                    className="text-amber-400 text-2xl mb-2"
-                    onPress={() => router.back()}
-                >
-                    ←
-                </Text>
 
-                <Text className="text-amber-400 text-xl font-bold text-center">
-                    PROFILE
-                </Text>
-                <Text className="text-slate-400 text-sm text-center">
-                    Member Details
-                </Text>
-            </View>
+            <AppHeader title={"Profile"} onMenuPress={() => setMenuOpen(true)} />
+            <MemberMenuModal visible={menuOpen}
+                onClose={() => setMenuOpen(false)} />
 
             <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
                 {/* Photos */}
                 <View className="items-center mt-6">
                     <Image
                         source={
-                            member.profile_photo
+                            member?.profile_photo
                                 ? { uri: `${STORAGE_URL}/${member.profile_photo}` }
                                 : require("../../assets/images/avatar.png")
                         }
@@ -132,7 +133,7 @@ export default function Profile() {
                         className="rounded-full border-2 border-amber-400"
                     />
 
-                    {member.couple_pic ? (
+                    {member?.couple_pic ? (
                         <Image
                             source={{ uri: `${STORAGE_URL}/${member.couple_pic}` }}
                             style={{ width: 200, height: 120 }}
@@ -144,20 +145,20 @@ export default function Profile() {
 
                 {/* Info Card */}
                 <View className="mx-4 mt-6 bg-[#071633] rounded-xl border border-[#102a56]">
-                    <InfoRow label="Family Name" value={member.family_name} />
+                    <InfoRow label="Family Name" value={member?.family_name} />
                     <InfoRow label="Full Name" value={fullName} />
-                    <InfoRow label="Date of Birth" value={formatDate(member.date_of_birth)} />
-                    <InfoRow label="Wedding Date" value={formatDate(member.wedding_date)} />
-                    <InfoRow label="Spouse Name" value={member.spouse_name} />
-                    <InfoRow label="Email" value={member.email} />
-                    <InfoRow label="Mobile" value={member.mobile_number} />
+                    <InfoRow label="Date of Birth" value={formatDate(member?.date_of_birth)} />
+                    <InfoRow label="Wedding Date" value={formatDate(member?.wedding_date)} />
+                    <InfoRow label="Spouse Name" value={member?.spouse_name} />
+                    <InfoRow label="Email" value={member?.email} />
+                    <InfoRow label="Mobile" value={member?.mobile_number} />
                     <InfoRow label="Address" value={address} />
-                    <InfoRow label="Occupation" value={member.occupation} />
-                    <InfoRow label="Status" value={member.status.replace("_", " ")} />
+                    <InfoRow label="Occupation" value={member?.occupation} />
+                    <InfoRow label="Status" value={member?.status.replace("_", " ")} />
                     <InfoRow
                         label="Membership Fee"
                         value={
-                            member.membership_fee
+                            member?.membership_fee
                                 ? `₹ ${member.membership_fee}`
                                 : "—"
                         }
@@ -174,11 +175,14 @@ export default function Profile() {
                         </Text>
                     </Pressable>
                 </View>
-                <RequestChangeModal
-                    visible={changeModalOpen}
-                    onClose={() => setChangeModalOpen(false)}
-                    memberId={member.id}
-                />
+                {member && (
+                    <RequestChangeModal
+                        visible={changeModalOpen}
+                        onClose={() => setChangeModalOpen(false)}
+                        memberId={member.id}
+                    />
+                )}
+
             </ScrollView>
         </SafeAreaView>
     );

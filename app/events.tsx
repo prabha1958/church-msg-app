@@ -1,12 +1,12 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { apiFetch } from "@/lib/api";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import EventCard from "./components/EventCard";
 import MemberMenuModal from "./components/MemberMenuModal";
 
 import { router } from "expo-router";
+import AppHeader from "./components/AppHeader";
 import Loader from "./components/Loader";
 
 
@@ -32,33 +32,37 @@ export default function Events() {
 
 
     useEffect(() => {
-        let mounted = true;
-
-        const fetchEvents = async () => {
-            try {
-
-                setLoading(true);
-
-                const res = await apiFetch(
-                    `${process.env.EXPO_PUBLIC_API_URL}/events`
-                );
-
-                const data = await res.json();
-                if (mounted) setEvents(data.data);
-
-
-
-            } finally {
-                if (mounted) setLoading(false);
-            }
-        };
-
         fetchEvents();
-
-        return () => {
-            mounted = false;
-        };
     }, []);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            fetchEvents();
+        }, 30000); // every 30 seconds
+
+        return () => clearInterval(interval);
+    }, []);
+
+
+
+    const fetchEvents = async () => {
+        try {
+            setLoading(true)
+
+            const res = await apiFetch(
+                `${process.env.EXPO_PUBLIC_API_URL}/events`
+            );
+
+            const data = await res.json();
+            setEvents(data.data)
+            setLoading(false)
+
+
+        } catch (e) {
+            console.log('failed to fetch events', e)
+            setLoading(false)
+        }
+    }
 
 
     if (loading) {
@@ -72,25 +76,13 @@ export default function Events() {
 
 
     return (
+
         <SafeAreaView className="flex-1 bg-[#040c1f]">
-
-
-
-            {/* Header */}
-            <View className="bg-[#272757] px-4 py-3 flex-row items-center justify-between">
-
-                {/* Left: Menu */}
-                <TouchableOpacity onPress={() => setMenuOpen(true)}>
-                    <Text className="text-white text-2xl font-bold">☰</Text>
-                </TouchableOpacity>
-
-                {/* Right: Church Logo */}
-
-            </View>
-
-            <MemberMenuModal visible={menuOpen}
-                onClose={() => setMenuOpen(false)} />
-
+            {loading && (
+                <View className="flex-1 bg-[#040c1f]">
+                    <Loader />
+                </View>
+            )}
             {/* Back */}
             <Text
                 className="text-amber-400 text-2xl p-4"
@@ -99,10 +91,19 @@ export default function Events() {
                 ←
             </Text>
 
+            {/* Header */}
+
+            <AppHeader title={"Events"} onMenuPress={() => setMenuOpen(true)} />
+
+
+            <MemberMenuModal visible={menuOpen}
+                onClose={() => setMenuOpen(false)} />
+
+
 
             {/* Message list */}
 
-            <Text className="text-blue-50 text-2xl mt-10 text-center">Events</Text>
+
 
 
             <FlatList

@@ -1,8 +1,9 @@
-import { syncSessionFromServer } from "@/utils/syncSessionFromServer";
 import { apiFetch } from "@/lib/api";
+import { syncSessionFromServer } from "@/utils/syncSessionFromServer";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, FlatList, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import AppHeader from "../components/AppHeader";
 import MemberMenuModal from "../components/MemberMenuModal";
 import MessageCard from "../components/MessageCard";
 
@@ -75,24 +76,14 @@ export default function InboxScreen() {
         );
     }
 
-
+    const logo = require("../../assets/images/icon.png")
 
     return (
         <SafeAreaView className="flex-1 bg-[#040c1f]">
 
-
-
             {/* Header */}
-            <View className="bg-[#272757] px-4 py-3 flex-row items-center justify-between">
 
-                {/* Left: Menu */}
-                <TouchableOpacity onPress={() => setMenuOpen(true)}>
-                    <Text className="text-white text-2xl font-bold">☰</Text>
-                </TouchableOpacity>
-
-                {/* Right: Church Logo */}
-
-            </View>
+            <AppHeader title={"Messages from Church"} onMenuPress={() => setMenuOpen(true)} />
 
             <MemberMenuModal visible={menuOpen}
                 onClose={() => setMenuOpen(false)} />

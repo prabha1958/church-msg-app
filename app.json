@@ -2,6 +2,7 @@
   "expo": {
     "name": "Church Community",
     "slug": "church-community",
+    "scheme": "churchmsg",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -21,17 +22,14 @@
         "UIBackgroundModes": [
           "remote-notification"
         ]
-      },
-      "plugins": [
-        "expo-notifications"
-      ]
+      }
     },
     "android": {
+      "package": "com.communitychurch.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.communitychurch.app",
       "permissions": [
         "RECEIVE_BOOT_COMPLETED",
         "VIBRATE",
@@ -42,6 +40,7 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
+      "expo-router",
       [
         "expo-notifications",
         {

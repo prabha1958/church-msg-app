@@ -1,9 +1,10 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { apiFetch } from "@/lib/api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, Image, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, FlatList, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AllianceCard from "../components/AllianceCard";
+import AppHeader from "../components/AppHeader";
 import MemberMenuModal from "../components/MemberMenuModal";
 
 
@@ -140,20 +141,7 @@ export default function InboxScreen() {
 
 
             {/* Header */}
-            <View className="bg-[#272757] px-4 py-3 flex-row items-center justify-between">
-
-                {/* Left: Menu */}
-                <TouchableOpacity onPress={() => setMenuOpen(true)}>
-                    <Text className="text-white text-2xl font-bold">☰</Text>
-                </TouchableOpacity>
-
-                {/* Right: Church Logo */}
-                <Image
-                    source={require("../../assets/images/church-logo.png")}
-                    className="w-8 h-8"
-                    resizeMode="contain"
-                />
-            </View>
+            <AppHeader title={"Alliances"} onMenuPress={() => setMenuOpen(true)} />
 
             <MemberMenuModal visible={menuOpen}
                 onClose={() => setMenuOpen(false)} />

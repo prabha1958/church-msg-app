@@ -1,10 +1,11 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { apiFetch } from "@/lib/api";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { Image, ImageBackground, Linking, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Image, ImageBackground, Linking, Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import AppHeader from "../components/AppHeader";
 import Loader from "../components/Loader";
+import MemberMenuModal from "../components/MemberMenuModal";
 
 
 
@@ -114,32 +115,19 @@ export default function MessageDetail() {
     return (
 
         <SafeAreaView className="flex-1  bg-[#040c1f]">
-
+            <Text
+                className="text-white text-2xl mr-3"
+                onPress={() => router.back()}
+            >
+                ←
+            </Text>
             {/* Header */}
-            <View className="bg-[#272757] px-4 py-3 flex-row items-center justify-between">
 
-                {/* Left: Menu */}
-                <TouchableOpacity onPress={() => setMenuOpen(true)}>
-                    <Text className="text-white text-2xl font-bold">☰</Text>
-                </TouchableOpacity>
+            <AppHeader title={message.title} onMenuPress={() => setMenuOpen(true)} />
 
-                {/* Right: Church Logo */}
-                <Image
-                    source={require("../../assets/images/church-logo.png")}
-                    className="w-8 h-8"
-                    resizeMode="contain"
-                />
-            </View>
-            {/* Header */}
-            <View className=" px-4 py-3 flex-row items-center">
-                <Text
-                    className="text-white text-2xl mr-3"
-                    onPress={() => router.back()}
-                >
-                    ←
-                </Text>
+            <MemberMenuModal visible={menuOpen}
+                onClose={() => setMenuOpen(false)} />
 
-            </View>
 
             <ScrollView contentContainerStyle={{ padding: 16 }}>
 
@@ -159,9 +147,7 @@ export default function MessageDetail() {
                             </Text>
                             {/* Title + Date */}
                             <View className="flex-row items-start mb-3">
-                                <Text className={`${getTitleColor(type)} text-3xl font-semibold flex-1 pr-2`}>
-                                    {message.title}
-                                </Text>
+
 
 
                             </View>

@@ -1,7 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Image, ImageBackground, SafeAreaView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 
 
@@ -12,7 +13,8 @@ export default function LoginScreen() {
     const router = useRouter();
 
 
-
+    const bgImage = require("../assets/images/loginbg.png");
+    const logo = require("../assets/images/icon.png");
 
 
 
@@ -78,37 +80,62 @@ export default function LoginScreen() {
 
 
     return (
-        <View className="flex-1 justify-center bg-blue-50 px-6">
-            <Text className="text-2xl font-bold text-center mb-8 text-[#272757]">
-                Member Login
-            </Text>
 
-            <TextInput
-                placeholder="Member ID"
-                keyboardType="numeric"
-                className="border border-gray-300 rounded-lg px-4 py-3 mb-4 bg-white"
-                value={memberId}
-                onChangeText={setMemberId}
-            />
+        <SafeAreaProvider>
+            <SafeAreaView style={{ flex: 1 }}>
+                <ImageBackground
+                    source={bgImage}
+                    resizeMode="cover"
+                    style={{ flex: 1 }}
+                >
+                    <View flex-1 className="flex items-center mt-40">
+                        <Image
+                            source={logo}
+                            style={{ width: 80, height: 80, borderRadius: 15 }}
+                            alt="logo"
+                            className="rounded-full "
 
-            <TextInput
-                placeholder="Mobile Number"
-                keyboardType="phone-pad"
-                className="border border-gray-300 rounded-lg px-4 py-3 mb-6 bg-white"
-                value={mobile}
-                onChangeText={setMobile}
-            />
+                        />
 
-            <TouchableOpacity
-                className={`py-3 rounded-lg ${loading ? "bg-gray-400" : "bg-[#272757]"
-                    }`}
-                onPress={handleLogin}
-                disabled={loading}
-            >
-                <Text className="text-white text-center font-semibold text-lg">
-                    {loading ? "Logging in..." : "Login"}
-                </Text>
-            </TouchableOpacity>
-        </View>
+                    </View>
+
+                    <View className="flex-1  px-6 mt-10">
+
+                        <Text className="text-2xl font-bold text-center mb-8 text-[#cee612]">
+                            Member Login
+                        </Text>
+
+                        <TextInput
+                            placeholder="Member ID"
+                            keyboardType="numeric"
+                            className="border border-gray-300 rounded-lg px-4 py-3 mb-4 bg-white"
+                            value={memberId}
+                            onChangeText={setMemberId}
+                        />
+
+                        <TextInput
+                            placeholder="Mobile Number"
+                            keyboardType="phone-pad"
+                            className="border border-gray-300 rounded-lg px-4 py-3 mb-6 bg-white"
+                            value={mobile}
+                            onChangeText={setMobile}
+                        />
+
+                        <TouchableOpacity
+                            className={`py-3 rounded-lg ${loading ? "bg-gray-400" : "bg-[#576109]"
+                                }`}
+                            onPress={handleLogin}
+                            disabled={loading}
+                        >
+                            <Text className="text-white text-center font-semibold text-lg">
+                                {loading ? "Logging in..." : "Login"}
+                            </Text>
+                        </TouchableOpacity>
+
+                    </View>
+                </ImageBackground>
+            </SafeAreaView>
+        </SafeAreaProvider>
+
     );
 }

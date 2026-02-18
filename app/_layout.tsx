@@ -17,6 +17,7 @@ export default function RootLayout() {
 
 
 
+
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -34,8 +35,6 @@ export default function RootLayout() {
 
     checkAuth();
   }, []);
-
-
 
 
   // ✅ ALWAYS return Stack immediately

@@ -1,16 +1,18 @@
 import { apiFetch } from "@/lib/api";
 import { formatDate } from "@/utils/date";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import AppHeader from "../components/AppHeader";
 import ImageSlider from "../components/ImageSlider";
 import Loader from "../components/Loader";
+import MemberMenuModal from "../components/MemberMenuModal";
 
 export default function EventDetail() {
     const params = useLocalSearchParams<{ id?: string | string[] }>();
     const [data, setData] = useState<any>(null);
+    const [menuOpen, setMenuOpen] = useState(false);
     const [loading, setLoading] = useState(true);
     const pastorId =
         typeof params.id === "string"
@@ -70,22 +72,25 @@ export default function EventDetail() {
                 <Text
                     className="text-amber-400 text-2xl p-4"
                     onPress={() => router.back()}
-                >                  ←
+                >
+                    ←
                 </Text>
 
+                <AppHeader title={data.name_of_event} onMenuPress={() => setMenuOpen(true)} />
 
+                <MemberMenuModal visible={menuOpen}
+                    onClose={() => setMenuOpen(false)} />
                 {/* Content */}
-                {data.event_photos && (
-                    <ImageSlider images={data.event_photos} />
-                )}
-
+                <View className="mt-7">
+                    {data.event_photos && (
+                        <ImageSlider images={data.event_photos} />
+                    )}
+                </View>
                 <Text className="text-sm text-gray-300 text-right">slide to see more photos</Text>
 
                 <View className="p-4">
 
-                    <Text className="text-amber-400 text-2xl font-bold">
-                        {data.name_of_event}
-                    </Text>
+
 
                     <Text className="text-slate-300 mt-1">
                         {formatDate(data.date_of_event)}

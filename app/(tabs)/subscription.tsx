@@ -1,9 +1,10 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { apiFetch } from "@/lib/api";
-import { router } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import { FlatList, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import AppHeader from "../components/AppHeader";
+import MemberMenuModal from "../components/MemberMenuModal";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
@@ -25,6 +26,7 @@ type ApiResponse = {
         financial_year: string;
     } | null;
     months: Row[];
+    fy: string;
 };
 
 
@@ -35,6 +37,9 @@ export default function Subscription() {
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<ApiResponse | null>(null);
     const [rows, setRows] = useState<Row[]>([]);
+    const [menuOpen, setMenuOpen] = useState(false);
+
+
 
 
 
@@ -108,41 +113,34 @@ export default function Subscription() {
         );
     }
 
+    const logo = require("../../assets/images/icon.png")
+
+
+
     return (
         <SafeAreaView className="flex-1 bg-[#040c1f] p-2">
             {/* Header */}
-            <View className="bg-[#071633] px-4 py-4 border-b border-[#102a56]">
-                <View className="flex mb-2">
-                    <Text
-                        className="text-amber-400 text-2xl mr-4 text-left"
-                        onPress={() => router.back()}
-                    >
-                        ←
+            <View className="bg-[#071633]  py-4 border-b border-[#102a56]">
+                <AppHeader title="Subscription" onMenuPress={() => setMenuOpen(true)} />
+                <MemberMenuModal visible={menuOpen}
+                    onClose={() => setMenuOpen(false)} />
+
+                <View className="mt-2">
+                    <Text className="text-slate-300">
+                        Name: <Text className="text-amber-300 text-xl">{data.member.name}</Text>
+                    </Text>
+
+                    <Text className="text-slate-300">
+                        Member ID: <Text className="text-blue-50">{data.member.id}</Text>
+                    </Text>
+
+                    <Text className="text-slate-300">
+                        Financial Year:{" "}
+                        <Text className="text-amber-300">
+                            {data.fy ?? "—"}
+                        </Text>
                     </Text>
                 </View>
-                <View className="mb-3">
-                    <Text className="text-amber-400 text-xl font-bold text-center">
-                        SUBSCRIPTION
-                    </Text>
-                    <Text className="text-amber-400 text-sm font-bold text-center">
-                        Details
-                    </Text>
-                </View>
-
-                <Text className="text-slate-300">
-                    Name: <Text className="text-amber-300 text-xl">{data.member.name}</Text>
-                </Text>
-
-                <Text className="text-slate-300">
-                    Member ID: <Text className="text-blue-50">{data.member.id}</Text>
-                </Text>
-
-                <Text className="text-slate-300">
-                    Financial Year:{" "}
-                    <Text className="text-amber-300">
-                        {data.subscription?.financial_year ?? "—"}
-                    </Text>
-                </Text>
             </View>
 
             {/* Table Header */}
