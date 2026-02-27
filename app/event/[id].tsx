@@ -57,7 +57,10 @@ export default function EventDetail() {
     if (loading) {
         return (
             <View className="flex-1 bg-[#040c1f]">
-                <Loader />
+                <View>
+                    <Loader />
+                </View>
+
             </View>
         );
     }

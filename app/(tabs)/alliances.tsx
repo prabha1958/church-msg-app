@@ -98,7 +98,7 @@ export default function InboxScreen() {
         return () => clearInterval(interval);
     }, []);
 
-    const refreshMessages = async () => {
+    const refreshAlliances = async () => {
         setRefreshing(true);
         await fetchAlliances();   // your existing API call
         setRefreshing(false);
@@ -159,7 +159,7 @@ export default function InboxScreen() {
                 )}
                 contentContainerStyle={{ padding: 12 }}
                 refreshing={refreshing}
-                onRefresh={refreshMessages}
+                onRefresh={refreshAlliances}
                 ListEmptyComponent={
                     <Text className="text-center text-gray-500 mt-10">
                         No messages available

@@ -73,7 +73,7 @@ export default function MessageCard({ item }: { item: any }) {
                     />
                 }
 
-                <Text className={`${getTitleColor(type)} font-semibold text-base mb-1`}>
+                <Text className={`${getTitleColor(type)} font-bold text-xl  mb-1`}>
                     {item.title}
                 </Text>
 

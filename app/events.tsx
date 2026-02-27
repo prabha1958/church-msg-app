@@ -8,6 +8,7 @@ import MemberMenuModal from "./components/MemberMenuModal";
 import { router } from "expo-router";
 import AppHeader from "./components/AppHeader";
 import Loader from "./components/Loader";
+import { SkeletonCard } from "./components/SkeletonCard";
 
 
 
@@ -47,7 +48,7 @@ export default function Events() {
 
     const fetchEvents = async () => {
         try {
-            setLoading(true)
+
 
             const res = await apiFetch(
                 `${process.env.EXPO_PUBLIC_API_URL}/events`
@@ -66,12 +67,14 @@ export default function Events() {
 
 
     if (loading) {
-        return (
-            <View className="flex-1 bg-[#040c1f]">
-                <Loader />
-            </View>
-        );
+        <SkeletonCard />
     }
+
+    const refreshEvents = async () => {
+        setRefreshing(true);
+        await fetchEvents();   // your existing API call
+        setRefreshing(false);
+    };
 
 
 
@@ -112,6 +115,7 @@ export default function Events() {
                 renderItem={({ item }) => <EventCard item={item} />}
                 contentContainerStyle={{ padding: 12 }}
                 refreshing={refreshing}
+                onRefresh={refreshEvents}
                 ListEmptyComponent={
                     <Text className="text-center text-gray-500 mt-10">
                         No event available

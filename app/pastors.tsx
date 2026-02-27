@@ -31,35 +31,40 @@ export default function Pastors() {
 
 
 
+
     useEffect(() => {
-        let mounted = true;
-
-        const fetchMessage = async () => {
-            try {
-
-                setLoading(true);
-
-                const res = await apiFetch(
-                    `${process.env.EXPO_PUBLIC_API_URL}/pastors`
-                );
-
-                const data = await res.json();
-                if (mounted) setPastors(data.data);
-
-
-
-
-            } finally {
-                if (mounted) setLoading(false);
-            }
-        };
-
-        fetchMessage();
-
-        return () => {
-            mounted = false;
-        };
+        fetchPastors();
     }, []);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            fetchPastors();
+        }, 30000); // every 30 seconds
+
+        return () => clearInterval(interval);
+    }, []);
+
+
+
+    const fetchPastors = async () => {
+        try {
+            setLoading(true)
+
+            const res = await apiFetch(
+                `${process.env.EXPO_PUBLIC_API_URL}/pastors`
+            );
+
+            const data = await res.json();
+            setPastors(data.data)
+            setLoading(false)
+
+
+        } catch (e) {
+            console.log('failed to fetch pastors', e)
+            setLoading(false)
+        }
+    }
+
 
 
     if (loading) {
@@ -69,6 +74,12 @@ export default function Pastors() {
             </View>
         );
     }
+
+    const refreshPastors = async () => {
+        setRefreshing(true);
+        await fetchPastors();   // your existing API call
+        setRefreshing(false);
+    };
 
 
 
@@ -103,6 +114,7 @@ export default function Pastors() {
                 renderItem={({ item }) => <PastorCard item={item} />}
                 contentContainerStyle={{ padding: 12 }}
                 refreshing={refreshing}
+                onRefresh={refreshPastors}
                 ListEmptyComponent={
                     <Text className="text-center text-gray-500 mt-10">
                         No pastor available

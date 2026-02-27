@@ -101,24 +101,30 @@ export default function MemberMenuModal({
                             Member ID: {member?.id ?? "-"}
                         </Text>
 
+                        <View className="flex flex-col gap-5 mb-8">
+                            <TouchableOpacity onPress={() => { onClose(); router.push('/profile') }} className=" border border-[#4d93f0] rounded-xl">
+                                <Text className="text-xl text-blue-50 text-center">Profile</Text>
+                            </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => { onClose(); router.push('/inbox') }} className="mt-10 border border-[#4d93f0] rounded-xl">
-                            <Text className="text-xl text-blue-50 text-center">Messages</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => { onClose(); router.push('/subscription') }} className="mt-10 border border-[#4d93f0] rounded-xl">
-                            <Text className="text-xl text-blue-50 text-center">Subscriptions</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => { onClose(); router.push('/profile') }} className="mt-10 border border-[#4d93f0] rounded-xl">
-                            <Text className="text-xl text-blue-50 text-center">Profile</Text>
-                        </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => { onClose(); router.push('/pastors') }} className="mt-10 border border-[#4d93f0] rounded-xl">
-                            <Text className="text-xl text-blue-50 text-center">Our Clergy</Text>
-                        </TouchableOpacity>
+                            <TouchableOpacity onPress={() => { onClose(); router.push('/inbox') }} className=" border border-[#4d93f0] rounded-xl">
+                                <Text className="text-xl text-blue-50 text-center">Messages</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => { onClose(); router.push('/subscription') }} className=" border border-[#4d93f0] rounded-xl">
+                                <Text className="text-xl text-blue-50 text-center">Church Subscription</Text>
+                            </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => { onClose(); router.push('/events') }} className="mb-9 mt-6 border border-[#4d93f0] rounded-xl">
-                            <Text className="text-xl text-blue-50 text-center">Events</Text>
-                        </TouchableOpacity>
+
+                            <TouchableOpacity onPress={() => { onClose(); router.push('/pastors') }} className=" border border-[#4d93f0] rounded-xl">
+                                <Text className="text-xl text-blue-50 text-center">Our Clergy</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity onPress={() => { onClose(); router.push('/events') }} className=" border border-[#4d93f0] rounded-xl">
+                                <Text className="text-xl text-blue-50 text-center">Events</Text>
+                            </TouchableOpacity>
+                        </View>
+
+
 
 
 
