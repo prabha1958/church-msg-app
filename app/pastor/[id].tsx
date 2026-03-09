@@ -5,8 +5,8 @@ import React, { useEffect, useState } from "react";
 import { Image, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AppHeader from "../components/AppHeader";
+import AppLoader from "../components/AppLoader";
 import InfoRow from "../components/InfoRow";
-import Loader from "../components/Loader";
 import MemberMenuModal from "../components/MemberMenuModal";
 import Section from "../components/Section";
 
@@ -57,9 +57,7 @@ export default function PastorDetail() {
 
     if (loading) {
         return (
-            <View className="flex-1 bg-[#040c1f]">
-                <Loader />
-            </View>
+            <AppLoader />
         );
     }
 

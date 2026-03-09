@@ -1,13 +1,13 @@
 import { apiFetch } from "@/lib/api";
 import { useEffect, useState } from "react";
-import { FlatList, Text, View } from "react-native";
+import { FlatList, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MemberMenuModal from "./components/MemberMenuModal";
 import PastorCard from "./components/PastorCard";
 
 import { router } from "expo-router";
 import AppHeader from "./components/AppHeader";
-import Loader from "./components/Loader";
+import AppLoader from "./components/AppLoader";
 
 
 
@@ -69,9 +69,7 @@ export default function Pastors() {
 
     if (loading) {
         return (
-            <View className="flex-1 bg-[#040c1f]">
-                <Loader />
-            </View>
+            <AppLoader />
         );
     }
 

@@ -45,6 +45,7 @@ export default function MessageCard({ item }: { item: any }) {
         }
     }
 
+
     return (
 
         <TouchableOpacity

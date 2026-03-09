@@ -7,8 +7,8 @@ import MemberMenuModal from "./components/MemberMenuModal";
 
 import { router } from "expo-router";
 import AppHeader from "./components/AppHeader";
+import AppLoader from "./components/AppLoader";
 import Loader from "./components/Loader";
-import { SkeletonCard } from "./components/SkeletonCard";
 
 
 
@@ -67,7 +67,7 @@ export default function Events() {
 
 
     if (loading) {
-        <SkeletonCard />
+        <AppLoader />
     }
 
     const refreshEvents = async () => {

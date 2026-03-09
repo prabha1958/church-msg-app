@@ -1,9 +1,10 @@
 import { apiFetch } from "@/lib/api";
 import { syncSessionFromServer } from "@/utils/syncSessionFromServer";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, Text } from "react-native";
+import { FlatList, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AppHeader from "../components/AppHeader";
+import AppLoader from "../components/AppLoader";
 import MemberMenuModal from "../components/MemberMenuModal";
 import MessageCard from "../components/MessageCard";
 
@@ -70,9 +71,7 @@ export default function InboxScreen() {
 
     if (loading) {
         return (
-            <SafeAreaView className="flex-1 justify-center items-center bg-[#F4F6FB]">
-                <ActivityIndicator size="large" color="#272757" />
-            </SafeAreaView>
+            <AppLoader />
         );
     }
 

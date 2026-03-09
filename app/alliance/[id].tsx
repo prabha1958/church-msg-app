@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AppHeader from "../components/AppHeader";
+import AppLoader from "../components/AppLoader";
 import ImageSlider from "../components/ImageSlider";
 import InfoRow from "../components/InfoRow";
 import Section from "../components/Section";
@@ -12,6 +13,7 @@ import Section from "../components/Section";
 export default function AllianceDetail() {
     const params = useLocalSearchParams<{ id?: string | string[] }>();
     const [menuOpen, setMenuOpen] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [data, setData] = useState<any>(null);
     const allianceId =
         typeof params.id === "string"
@@ -29,6 +31,7 @@ export default function AllianceDetail() {
 
     const load = async (id: string) => {
         try {
+            setLoading(true)
             const res = await apiFetch(
                 `${process.env.EXPO_PUBLIC_API_URL}/alliances/${id}`
             );
@@ -41,13 +44,19 @@ export default function AllianceDetail() {
 
             if (json.success) {
                 setData(json.data);
+                setLoading(false)
             }
         } catch (e) {
             console.error("Failed to load alliance", e);
+            setLoading(false)
         }
     };
 
-    if (!data) return null;
+    if (loading) {
+        return (
+            <AppLoader />
+        )
+    }
 
     const age = calculateAge(data.alliance.date_of_birth);
 

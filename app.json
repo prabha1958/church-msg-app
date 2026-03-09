@@ -17,23 +17,24 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.communitychurch.app",
+      "bundleIdentifier": "com.csimarital.churchmsgapp",
       "infoPlist": {
         "UIBackgroundModes": [
+          "remote-notification",
           "remote-notification"
-        ]
+        ],
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
       "package": "com.communitychurch.app",
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "permissions": [
-        "RECEIVE_BOOT_COMPLETED",
-        "VIBRATE",
-        "WAKE_LOCK"
+        "NOTIFICATIONS"
       ]
     },
     "web": {
@@ -48,7 +49,8 @@
           "color": "#ffffff",
           "enableBackgroundRemoteNotifications": true
         }
-      ]
+      ],
+      "expo-build-properties"
     ],
     "extra": {
       "eas": {
