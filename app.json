@@ -3,7 +3,7 @@
     "name": "Church Community",
     "slug": "church-community",
     "scheme": "churchmsg",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "light",
@@ -33,6 +33,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "versionCode": 3,
       "permissions": [
         "NOTIFICATIONS"
       ]
@@ -50,7 +51,8 @@
           "enableBackgroundRemoteNotifications": true
         }
       ],
-      "expo-build-properties"
+      "expo-build-properties",
+      "@react-native-community/datetimepicker"
     ],
     "extra": {
       "eas": {

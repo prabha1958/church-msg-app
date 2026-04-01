@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Image, ImageBackground, Linking, Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AppHeader from "../components/AppHeader";
-import Loader from "../components/Loader";
+import AppLoader from "../components/AppLoader";
 import MemberMenuModal from "../components/MemberMenuModal";
 
 
@@ -51,9 +51,7 @@ export default function MessageDetail() {
 
     if (loading) {
         return (
-            <View className="flex-1 bg-[#040c1f]">
-                <Loader />
-            </View>
+            <AppLoader />
         );
     }
 

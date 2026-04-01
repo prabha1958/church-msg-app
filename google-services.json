@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "626399509646",
-    "project_id": "csiwcr-8b3c7",
-    "storage_bucket": "csiwcr-8b3c7.firebasestorage.app"
+    "project_number": "50611677474",
+    "project_id": "church-community-3fe15",
+    "storage_bucket": "church-community-3fe15.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:626399509646:android:58228053a86b2b50119ddf",
+        "mobilesdk_app_id": "1:50611677474:android:c1bfc1a73472a212191d7b",
         "android_client_info": {
           "package_name": "com.communitychurch.app"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBUa1wZOg8QGcIbjtecsFolutVf6Pdv0CY"
+          "current_key": "AIzaSyAp3YvD2FMYChgPg9VLmi-pCvwZ8nPgE2I"
         }
       ],
       "services": {

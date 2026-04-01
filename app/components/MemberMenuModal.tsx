@@ -17,7 +17,10 @@ type Member = {
     family_name?: string;
     last_name?: string;
     profile_photo?: string;
+    role?: string;
 };
+
+type member_role = string;
 
 export default function MemberMenuModal({
     visible,
@@ -29,6 +32,8 @@ export default function MemberMenuModal({
     const router = useRouter();
     const translateX = useRef(new Animated.Value(-DRAWER_WIDTH)).current;
     const [member, setMember] = useState<Member | null>(null);
+    const [memberRole, setMemberRole] = useState<member_role | null>(null);
+    const [isAdmin, setIsAdmin] = useState(false);
 
 
     // Load member when modal opens
@@ -38,6 +43,9 @@ export default function MemberMenuModal({
         const loadMember = async () => {
             const stored = await AsyncStorage.getItem("member");
             if (stored) setMember(JSON.parse(stored));
+            const mr = await AsyncStorage.getItem("member_role");
+            if (mr) setMemberRole(JSON.parse(mr))
+            if (mr == 'admin') setIsAdmin(true);
         };
 
         loadMember();
@@ -67,6 +75,8 @@ export default function MemberMenuModal({
     };
 
     if (!visible) return null;
+
+
 
     return (
         <Modal transparent animationType="none" visible={visible}>
@@ -124,6 +134,16 @@ export default function MemberMenuModal({
                             </TouchableOpacity>
                         </View>
 
+                        {(memberRole == "admin") && (
+                            <TouchableOpacity
+                                className="bg-[#fca903] p-3 rounded-xl mt-4 mb-4 font-bold"
+                                onPress={() => { onClose(); router.push('/admin') }}
+                            >
+                                <Text className="text-[#241905] font-bold text-center">
+                                    Admin Panel
+                                </Text>
+                            </TouchableOpacity>
+                        )}
 
 
 

@@ -10,7 +10,7 @@ export default function AppHeader({ title, onMenuPress }: Props) {
     const logo = require("../../assets/images/icon.png");
 
     return (
-        <View className="bg-[#272757] px-4 py-3 flex-row items-center justify-between">
+        <View className="bg-[#272757] px-4 py-3 flex-row items-center justify-between ">
 
             <TouchableOpacity onPress={onMenuPress}>
                 <Ionicons name="menu" size={24} color="white" />

@@ -1,5 +1,4 @@
-import { apiFetch } from "@/lib/api";
-import { syncSessionFromServer } from "@/utils/syncSessionFromServer";
+import api from '@/services/api';
 import { useEffect, useState } from "react";
 import { FlatList, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -32,21 +31,12 @@ export default function InboxScreen() {
 
     const fetchMessages = async () => {
         try {
-            const res = await apiFetch(`${process.env.EXPO_PUBLIC_API_URL}/messages`);
+            const res = await api.get('/messages');
 
-            if (!res.ok) {
-                const text = await res.text();
-                console.log("Messages API error:", text);
-                return;
-            }
+            setMessages(res.data.data ?? []);
 
-            const data = await res.json();
-            setMessages(data.data ?? []);
-
-
-
-        } catch (e) {
-            console.log("Failed to load messages", e);
+        } catch (e: any) {
+            console.log("Messages API error:", e.response?.data || e.message);
         } finally {
             setLoading(false);
         }
@@ -55,7 +45,7 @@ export default function InboxScreen() {
     useEffect(() => {
         const interval = setInterval(() => {
             fetchMessages();
-            syncSessionFromServer();
+
         }, 30000); // every 30 seconds
 
         return () => clearInterval(interval);
@@ -75,7 +65,8 @@ export default function InboxScreen() {
         );
     }
 
-    const logo = require("../../assets/images/icon.png")
+
+
 
     return (
         <SafeAreaView className="flex-1 bg-[#040c1f]">

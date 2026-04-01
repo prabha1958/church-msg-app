@@ -4,7 +4,7 @@ import * as Notifications from 'expo-notifications';
 import { Stack, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import "../global.css";
 
@@ -26,6 +26,14 @@ export default function RootLayout() {
       shouldSetBadge: false,
     }),
   });
+
+
+  if (Platform.OS === "android") {
+    Notifications.setNotificationChannelAsync("default", {
+      name: "default",
+      importance: Notifications.AndroidImportance.MAX,
+    });
+  }
 
 
 
@@ -81,7 +89,7 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <View className="flex-1 bg-slate-950">
 
-        <StatusBar style="light" backgroundColor="#272757" />
+        <StatusBar style="dark" backgroundColor="#272757" />
         <Stack screenOptions={{ headerShown: false }} />
 
       </View>
