@@ -134,7 +134,7 @@ export default function EditMember() {
 
     if (!member) return null;
 
-    console.log(profilePreview)
+
 
     return (
 
@@ -232,12 +232,18 @@ export default function EditMember() {
                             placeholder="Occupation"
                             className="bg-gray-100 p-3 rounded-xl mb-2"
                         />
-                        <Text className="font-bold text-gray-50 text-sm">Status of Occupation</Text>
-                        <TextInput
+
+                        <FormSelect
+                            label="Occupation Status"
                             value={form.status}
-                            onChangeText={(t) => setForm({ ...form, status: t })}
-                            placeholder="Status of Occupation"
-                            className="bg-gray-100 p-3 rounded-xl mb-2"
+                            onChange={(value) =>
+                                setForm({ ...form, occupation: value })
+                            }
+                            items={[
+                                { label: 'in_service', value: 'in_service' },
+                                { label: 'retired', value: 'retired' },
+
+                            ]}
                         />
                         <Text className="font-bold mb-2">Important Dates</Text>
 
@@ -250,8 +256,8 @@ export default function EditMember() {
 
                         <FormDateInput
                             label="Wedding Date"
-                            value={form.date_of_birth}
-                            onChangeText={(t) => setForm({ ...form, date_of_birth: t })}
+                            value={form.wedding_date}
+                            onChangeText={(t) => setForm({ ...form, wedding_date: t })}
 
                         />
                         <Text className="font-bold mb-2">Address</Text>

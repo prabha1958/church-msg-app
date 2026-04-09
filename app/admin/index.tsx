@@ -15,7 +15,7 @@ export default function AdminDashboard() {
     const [menuOpen, setMenuOpen] = useState(false);
     return (
         <ScrollView className="flex-1 bg-gray-100 p-4">
-            <View className='py-3'>
+            <View className='py-3 mt-10'>
                 <AppHeader title={"Admin Dashboard"} onMenuPress={() => setMenuOpen(true)} />
             </View>
 
