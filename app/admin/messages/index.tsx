@@ -1,7 +1,7 @@
 import AppHeader from '@/app/components/AppHeader';
 import MemberMenuModal from '@/app/components/MemberMenuModal';
 import api from '@/services/api';
-import { useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { FlatList, Image, Pressable, Text, View } from 'react-native';
 
@@ -91,31 +91,34 @@ export default function MessagesList() {
     );
 
     return (
-        <View className="flex-1 bg-gray-100 p-4">
+        <>
+            <Stack.Screen options={{ title: '' }} />
+            <View className="flex-1 bg-gray-100 p-4">
 
-            <View className='mb-4'>
-                <AppHeader title={"Messages from Church"} onMenuPress={() => setMenuOpen(true)} />
+                <View className='mb-4'>
+                    <AppHeader title={"Messages from Church"} onMenuPress={() => setMenuOpen(true)} />
+                </View>
+                <MemberMenuModal visible={menuOpen}
+                    onClose={() => setMenuOpen(false)} />
+                <View className="flex-row justify-between mb-4"></View>
+                {/* Add Message Button */}
+                <Pressable
+                    onPress={() => router.push('/admin/messages/add')}
+                    className="bg-blue-600 p-3 rounded-xl mb-4"
+                >
+                    <Text className="text-white text-center font-bold">
+                        + Add Message
+                    </Text>
+                </Pressable>
+
+                <FlatList
+                    data={messages}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={({ item }) => <MessageCard item={item} />}
+                    refreshing={refreshing}
+                    onRefresh={refreshMessages}
+                />
             </View>
-            <MemberMenuModal visible={menuOpen}
-                onClose={() => setMenuOpen(false)} />
-            <View className="flex-row justify-between mb-4"></View>
-            {/* Add Message Button */}
-            <Pressable
-                onPress={() => router.push('/admin/messages/add')}
-                className="bg-blue-600 p-3 rounded-xl mb-4"
-            >
-                <Text className="text-white text-center font-bold">
-                    + Add Message
-                </Text>
-            </Pressable>
-
-            <FlatList
-                data={messages}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => <MessageCard item={item} />}
-                refreshing={refreshing}
-                onRefresh={refreshMessages}
-            />
-        </View>
+        </>
     );
 }

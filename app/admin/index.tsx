@@ -61,6 +61,13 @@ export default function AdminDashboard() {
                 />
 
                 <AdminCard
+                    title="Events"
+                    icon="people"
+                    color="bg-[#8ce617]"
+                    onPress={() => router.push('/admin/events')}
+                />
+
+                <AdminCard
                     title="Reports"
                     icon="bar-chart"
                     color="bg-indigo-500"

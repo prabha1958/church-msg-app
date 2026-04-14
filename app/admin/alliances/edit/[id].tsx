@@ -5,6 +5,8 @@ import FormInput from '@/app/components/FormInput';
 import FormSelect from '@/app/components/FormSelect';
 import ImagePickerInput from '@/app/components/ImagePickerInput';
 import api from '@/services/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -26,6 +28,13 @@ export default function EditAlliance() {
     const [alliance, setAlliance] = useState<any>(null);
     const [form, setForm] = useState<any>({});
     const [images, setImages] = useState<any>({});
+
+    type RNFile = {
+        uri: string;
+        name: string;
+        type: string;
+    };
+
 
     const fileUrl = (path?: string | null) => {
         if (!path) return null;
@@ -64,32 +73,36 @@ export default function EditAlliance() {
     }, []);
 
     const updateAlliance = async () => {
-        setLoading(true)
+        setLoading(true);
         try {
             const fd = new FormData();
+
+            // ✅ Fields to skip entirely
+            const skipFields = [
+                'profile_photo', 'photo1', 'photo2', 'photo3',
+                'member',           // 👈 nested object — causes ERR_NETWORK on Android
+                'created_at',       // 👈 not needed
+                'updated_at',       // 👈 not needed
+                'id',               // 👈 already in URL
+            ];
 
             Object.keys(form).forEach((key) => {
                 const value = form[key];
 
-                if (!value) return;
+                if (skipFields.includes(key)) return;
+                if (value === null || value === undefined) return;
 
-                // Skip images here (handled below)
-                if (
-                    key === 'profile_photo' ||
-                    key === 'photo1' ||
-                    key === 'photo2' ||
-                    key === 'photo3'
-                ) {
+                // ✅ Extra safety — skip any remaining objects/arrays
+                if (typeof value === 'object') {
+                    console.warn(`Skipping object field: ${key}`);
                     return;
                 }
 
-                fd.append(key, value);
+                fd.append(key, String(value)); // 👈 always cast to string
             });
 
-            // Append images ONLY if newly selected
             ['profile_photo', 'photo1', 'photo2', 'photo3'].forEach((key) => {
                 const img = images[key];
-
                 if (img && img.uri) {
                     fd.append(key, {
                         uri: img.uri,
@@ -101,25 +114,31 @@ export default function EditAlliance() {
 
             fd.append('_method', 'PATCH');
 
-            await api.post(`/admin/alliances/${id}`, fd, {
-                headers: { 'Content-Type': 'multipart/form-data' },
-            });
-            setLoading(false)
+            const token = await AsyncStorage.getItem('auth_token');
+
+            const headers: any = {
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+            };
+
+            if (Platform.OS === 'android') {
+                headers['Content-Type'] = 'multipart/form-data';
+            }
+
+            await api.post(`/admin/alliances/${id}`, fd, { headers });
+
+            setLoading(false);
             router.replace(`/admin/alliances/view/${id}`);
             alert('Alliance updated');
 
         } catch (e: any) {
+            setLoading(false);
             if (e.response?.status === 422) {
                 const errors = e.response.data.errors;
-                let msg = '';
-
-                Object.values(errors).forEach((errArr: any) => {
-                    msg += errArr[0] + '\n';
-                });
-
+                const msg = Object.values(errors).flat().join('\n');
                 alert(msg);
             } else {
-                alert('Update failed');
+                alert(e.response?.data?.message || e.message || 'Update failed');
             }
         }
     };
@@ -285,13 +304,21 @@ export default function EditAlliance() {
                             placeholder="About Family"
                         />
 
+
                         <Pressable
                             onPress={updateAlliance}
                             className="bg-green-600 p-3 rounded-xl mt-3"
                         >
-                            <Text className="text-white text-center">
-                                Save Changes
-                            </Text>
+                            {loading ? (
+                                <View className="flex-row justify-center items-center">
+                                    <ActivityIndicator color="#fff" />
+                                    <Text className="text-white ml-2 font-bold">Creating...</Text>
+                                </View>
+                            ) : (
+                                <Text className="text-white text-center font-bold">
+                                    Create Alliance
+                                </Text>
+                            )}
                         </Pressable>
                     </View>
                 </ScrollView>

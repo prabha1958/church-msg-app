@@ -1,9 +1,11 @@
 import AppHeader from '@/app/components/AppHeader';
+import AppLoader from '@/app/components/AppLoader';
+import FormSelect from '@/app/components/FormSelect';
 import MemberMenuModal from '@/app/components/MemberMenuModal';
 import api from '@/services/api';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Dimensions, Image, Modal, Pressable, ScrollView, Text, View } from 'react-native';
+import { Alert, Dimensions, Image, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 
 
 
@@ -16,6 +18,14 @@ export default function ViewAlliance() {
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [menuOpen, setMenuOpen] = useState(false);
     const router = useRouter();
+    const [payOpen, setPayOpen] = useState(false);
+
+
+    const [offlineForm, setOfflineForm] = useState({
+        amount: 3000,
+        payment_mode: 'cash',
+        reference_no: '',
+    });
 
     const fileUrl = (path?: string | null) =>
         path
@@ -35,10 +45,34 @@ export default function ViewAlliance() {
         loadAlliance();
     }, []);
 
-    if (loading) return <ActivityIndicator style={{ marginTop: 50 }} />;
+    if (loading) return <AppLoader />;
 
     if (!alliance) return <Text>No data</Text>;
 
+    const handleOfflinePay = async () => {
+        setLoading(true);
+
+        try {
+            const res = await api.post(
+                `/admin/alliances/${id}/payments/offline`,
+                offlineForm
+            );
+
+            Alert.alert('Success', 'Offline payment recorded');
+
+            setPayOpen(false);
+            loadAlliance(); // refresh data
+
+        } catch (e: any) {
+            if (e.response?.data?.message) {
+                Alert.alert('Error', e.response.data.message);
+            } else {
+                Alert.alert('Error', 'Payment failed');
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
 
 
 
@@ -124,6 +158,22 @@ export default function ViewAlliance() {
                             Edit Alliance
                         </Text>
                     </Pressable>
+                    {!alliance.amount && (
+                        <Pressable
+                            onPress={() => setPayOpen(true)}
+                            className="bg-blue-600 p-3 rounded-xl mt-3"
+                        >
+                            <Text className="text-white text-center">Pay</Text>
+                        </Pressable>
+                    )}
+
+                    {alliance.amount && (
+                        <View className="bg-green-200 p-3 rounded-xl mt-3">
+                            <Text className="text-green-800 text-center font-bold">
+                                Paid ₹{alliance.amount}
+                            </Text>
+                        </View>
+                    )}
 
 
                 </ScrollView>
@@ -148,6 +198,86 @@ export default function ViewAlliance() {
                             }}
                         />
                     </Pressable>
+                </Modal>
+                <Modal visible={payOpen} transparent animationType="slide">
+                    <KeyboardAvoidingView
+                        style={{ flex: 1 }}
+                        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                        className="flex-1 bg-[#082775] p-4"
+                    >
+
+                        <View
+                            style={{
+                                flex: 1,
+                                backgroundColor: 'rgba(0,0,0,0.5)',
+                                justifyContent: 'center',
+                                padding: 20,
+                            }}
+                        >
+                            <View className="bg-white p-4 rounded-xl">
+
+                                <Text className="text-lg font-bold mb-3">
+                                    Offline Payment
+                                </Text>
+
+                                {/* Amount */}
+                                <Text>Amount</Text>
+                                <TextInput
+                                    value={String(offlineForm.amount)}
+                                    keyboardType="numeric"
+                                    onChangeText={(t) =>
+                                        setOfflineForm({ ...offlineForm, amount: Number(t) })
+                                    }
+                                    className="border p-3 rounded-xl mb-2"
+                                />
+
+                                {/* Payment Mode */}
+                                <Text>Payment Mode</Text>
+                                <FormSelect
+                                    label="Payment mode"
+                                    value={offlineForm.payment_mode}
+                                    onChange={(value) =>
+                                        setOfflineForm({ ...offlineForm, payment_mode: value })
+                                    }
+                                    items={[
+                                        { label: 'cash', value: 'cash' },
+                                        { label: 'upi', value: 'upi' },
+                                    ]}
+                                />
+
+
+                                {/* Reference */}
+                                <Text>Reference No</Text>
+                                <TextInput
+                                    value={offlineForm.reference_no}
+                                    onChangeText={(t) =>
+                                        setOfflineForm({ ...offlineForm, reference_no: t })
+                                    }
+                                    className="border p-3 rounded-xl mb-3"
+                                />
+
+                                {/* Buttons */}
+                                <View className="flex-row justify-between">
+                                    <Pressable
+                                        onPress={() => setPayOpen(false)}
+                                        className="bg-gray-400 p-3 rounded-xl"
+                                    >
+                                        <Text>Cancel</Text>
+                                    </Pressable>
+
+                                    <Pressable
+                                        onPress={handleOfflinePay}
+                                        className="bg-green-600 p-3 rounded-xl"
+                                    >
+                                        <Text className="text-white">
+                                            {loading ? 'Processing...' : 'Confirm'}
+                                        </Text>
+                                    </Pressable>
+                                </View>
+
+                            </View>
+                        </View>
+                    </KeyboardAvoidingView>
                 </Modal>
             </View>
         </>
