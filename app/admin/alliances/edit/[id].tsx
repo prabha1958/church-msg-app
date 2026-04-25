@@ -11,6 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
+    ActivityIndicator,
     KeyboardAvoidingView,
     Platform,
     Pressable,
@@ -312,11 +313,11 @@ export default function EditAlliance() {
                             {loading ? (
                                 <View className="flex-row justify-center items-center">
                                     <ActivityIndicator color="#fff" />
-                                    <Text className="text-white ml-2 font-bold">Creating...</Text>
+                                    <Text className="text-white ml-2 font-bold">Saving...</Text>
                                 </View>
                             ) : (
                                 <Text className="text-white text-center font-bold">
-                                    Create Alliance
+                                    Save Changes
                                 </Text>
                             )}
                         </Pressable>

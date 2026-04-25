@@ -231,17 +231,19 @@ export default function ViewAlliance() {
                                     className="border p-3 rounded-xl mb-2"
                                 />
 
+
                                 {/* Payment Mode */}
                                 <Text>Payment Mode</Text>
                                 <FormSelect
-                                    label="Payment mode"
+                                    label="Mode of Payment"
                                     value={offlineForm.payment_mode}
                                     onChange={(value) =>
-                                        setOfflineForm({ ...offlineForm, payment_mode: value })
+                                        setOfflineForm(prev => ({ ...prev, payment_mode: value }))
                                     }
                                     items={[
                                         { label: 'cash', value: 'cash' },
                                         { label: 'upi', value: 'upi' },
+
                                     ]}
                                 />
 

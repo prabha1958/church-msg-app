@@ -1,11 +1,10 @@
 import AppHeader from '@/app/components/AppHeader';
 import FormDateInput from '@/app/components/FormDateInput';
-import FormSelect from '@/app/components/FormSelect';
 import ImagePickerInput from '@/app/components/ImagePickerInput';
 import MemberMenuModal from '@/app/components/MemberMenuModal';
 import api from '@/services/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Stack, useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -16,7 +15,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 
 export default function EditMember() {
     const { id } = useLocalSearchParams();
-
+    const router = useRouter();
     const [member, setMember] = useState<any>(null);
     const [form, setForm] = useState<any>({});
     const [email, setEmail] = useState('');
@@ -74,7 +73,7 @@ export default function EditMember() {
     const loadMember = async () => {
         try {
             setLoading(true)
-            const res = await api.get(`/admin/members/${id}`);
+            const res = await api.get(`/member/${id}`);
             const data = res.data.data;
 
             setMember(data);
@@ -149,7 +148,7 @@ export default function EditMember() {
                 }
             });
 
-            fd.append('_method', 'PUT');
+            fd.append('_method', 'PATCH');
 
             const token = await AsyncStorage.getItem('auth_token');
 
@@ -162,7 +161,7 @@ export default function EditMember() {
                 headers['Content-Type'] = 'multipart/form-data';
             }
 
-            await api.post(`/admin/members/${id}`, fd, { headers });
+            await api.post(`/member/${id}`, fd, { headers });
 
             alert('Member updated');
             loadMember();
@@ -184,7 +183,7 @@ export default function EditMember() {
     const updateEmail = async () => {
         try {
             setLoading(true)
-            await api.patch(`/admin/members/${id}/email`, { email });
+            await api.patch(`/members/${id}/email`, { email });
             alert('Email updated');
             setLoading(false)
         } catch (e: any) {
@@ -202,7 +201,7 @@ export default function EditMember() {
     const updateMobile = async () => {
         try {
             setLoading(true)
-            await api.patch(`/admin/members/${id}/mobile`, {
+            await api.patch(`/members/${id}/mobile`, {
                 mobile_number: mobile,
             });
             alert('Mobile updated');
@@ -257,6 +256,12 @@ export default function EditMember() {
                     enableOnAndroid={true}
                 >
                     <ScrollView className="flex-1 bg-[#082775] p-4">
+                        <Text
+                            className="text-white text-2xl mr-3"
+                            onPress={() => router.back()}
+                        >
+                            ←
+                        </Text>
 
                         {/* Photos */}
                         <View className='mb-4'>
@@ -315,17 +320,7 @@ export default function EditMember() {
                                 placeholder="Last Name"
                                 className="bg-gray-100 p-3 rounded-xl mb-2"
                             />
-                            <FormSelect
-                                label="Gender"
-                                value={form.gender}
-                                onChange={(t) =>
-                                    setForm(() => ({ ...form, gender: t }))
-                                }
-                                items={[
-                                    { label: 'male', value: 'male' },
-                                    { label: 'female', value: 'female' },
-                                ]}
-                            />
+
                             <Text className="font-bold text-gray-50 text-sm">Spouse Name</Text>
                             <TextInput
                                 value={form.spouse_name}
@@ -333,26 +328,8 @@ export default function EditMember() {
                                 placeholder="Spouse Name"
                                 className="bg-gray-100 p-3 rounded-xl mb-2"
                             />
-                            <Text className="font-bold text-gray-50 text-sm">Occupation</Text>
-                            <TextInput
-                                value={form.occupation}
-                                onChangeText={(t) => setForm({ ...form, occupation: t })}
-                                placeholder="Occupation"
-                                className="bg-gray-100 p-3 rounded-xl mb-2"
-                            />
 
-                            <FormSelect
-                                label="Occupation Status"
-                                value={form.status}
-                                onChange={(value) =>
-                                    setForm({ ...form, occupation: value })
-                                }
-                                items={[
-                                    { label: 'in_service', value: 'in_service' },
-                                    { label: 'retired', value: 'retired' },
 
-                                ]}
-                            />
                             <Text className="font-bold mb-2">Important Dates</Text>
 
                             <FormDateInput
@@ -408,7 +385,10 @@ export default function EditMember() {
                                 placeholder="PIN"
                                 className="bg-gray-100 p-3 rounded-xl mb-2"
                             />
-                            <Text className="font-bold text-sm text-gray-50">Membership Fee</Text>
+
+                            {/*
+                            
+                              <Text className="font-bold text-sm text-gray-50">Membership Fee</Text>
                             <TextInput
                                 value={form.membership_fee ? String(form.membership_fee) : ''}
                                 keyboardType='numeric'
@@ -416,6 +396,11 @@ export default function EditMember() {
                                 placeholder="Membership Fee"
                                 className="bg-gray-100 p-3 rounded-xl mb-2"
                             />
+
+                            
+                            
+                            
+                            */}
 
 
                             <Pressable
@@ -491,21 +476,7 @@ export default function EditMember() {
                         </View>
 
                         {/* Deactivate */}
-                        <Pressable
-                            onPress={deactivateMember}
-                            className="bg-red-600 p-4 rounded-xl"
-                        >
-                            {loading ? (
-                                <View className="flex-row justify-center items-center">
-                                    <ActivityIndicator color="#fff" />
-                                    <Text className="text-white ml-2 font-bold">Deactivating...</Text>
-                                </View>
-                            ) : (
-                                <Text className="text-white text-center font-bold">
-                                    Deactivate Member
-                                </Text>
-                            )}
-                        </Pressable>
+
 
                     </ScrollView>
                 </KeyboardAwareScrollView>

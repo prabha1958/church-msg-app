@@ -1,5 +1,6 @@
 import { apiFetch } from "@/lib/api";
 import { formatDate } from "@/utils/date";
+import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from "react";
 import { Image, Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -7,7 +8,8 @@ import AppHeader from "../components/AppHeader";
 import AppLoader from "../components/AppLoader";
 import InfoRow from "../components/InfoRow";
 import MemberMenuModal from "../components/MemberMenuModal";
-import RequestChangeModal from "../components/RequestChangeModal";
+
+const router = useRouter();
 
 
 type Member = {
@@ -119,6 +121,16 @@ export default function Profile() {
                 onClose={() => setMenuOpen(false)} />
 
             <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
+                <View className="flex-row justify-between items-center p-4 pt-6">
+                    <Text className="text-xl font-bold">Profile</Text>
+
+                    <Pressable
+                        onPress={() => router.push(`/member/profile/edit/${member?.id}`)}
+                        className="bg-blue-600 px-4 py-2 rounded-lg"
+                    >
+                        <Text className="text-white font-semibold">Edit</Text>
+                    </Pressable>
+                </View>
                 {/* Photos */}
                 <View className="items-center mt-6">
                     <Image
@@ -140,6 +152,7 @@ export default function Profile() {
                         />
                     ) : null}
                 </View>
+
 
                 {/* Info Card */}
                 <View className="mx-4 mt-6 bg-[#071633] rounded-xl border border-[#102a56]">
@@ -163,23 +176,7 @@ export default function Profile() {
                         isLast
                     />
                 </View>
-                <View className="mx-4 mt-6 mb-10">
-                    <Pressable
-                        onPress={() => setChangeModalOpen(true)}
-                        className="bg-amber-500 py-3 rounded-xl"
-                    >
-                        <Text className="text-center text-[#040c1f] font-semibold text-lg">
-                            Request Change
-                        </Text>
-                    </Pressable>
-                </View>
-                {member && (
-                    <RequestChangeModal
-                        visible={changeModalOpen}
-                        onClose={() => setChangeModalOpen(false)}
-                        memberId={member.id}
-                    />
-                )}
+
 
             </ScrollView>
         </SafeAreaView>

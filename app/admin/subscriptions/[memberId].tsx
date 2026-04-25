@@ -1,14 +1,14 @@
 import AppHeader from '@/app/components/AppHeader';
 import MemberMenuModal from '@/app/components/MemberMenuModal';
 import api from '@/services/api';
-import { Stack, useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Alert, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 export default function SubscriptionDetails() {
     const { memberId } = useLocalSearchParams();
-
+    const router = useRouter();
     const [member, setMember] = useState<any>(null);
     const [months, setMonths] = useState<any[]>([]);
     const [selectedMonths, setSelectedMonths] = useState<string[]>([]);
@@ -28,6 +28,10 @@ export default function SubscriptionDetails() {
         try {
             const res = await api.get(`/admin/subscriptions/${memberId}/due`);
             const data = res.data;
+            if (!data) {
+                router.push('/admin/subscriptions');
+                Alert.alert('no member found');
+            }
 
             setMember(data.member);
             setMonths(data.months);
@@ -87,6 +91,7 @@ export default function SubscriptionDetails() {
             alert(e.response?.data?.message || 'Payment failed');
         }
     };
+
 
     return (
         <>

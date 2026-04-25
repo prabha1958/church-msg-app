@@ -1,6 +1,6 @@
 import * as ImagePicker from 'expo-image-picker';
 import { useState } from 'react';
-import { Image, KeyboardAvoidingView, Platform, Pressable, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Image, KeyboardAvoidingView, Platform, Pressable, Text, TextInput, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import AppHeader from '@/app/components/AppHeader';
@@ -467,7 +467,7 @@ export default function AddMember() {
                             </View>
                         ) : (
                             <Text className="text-white text-center font-bold">
-                                Create Alliance
+                                Create Member
                             </Text>
                         )}
                     </Pressable>
