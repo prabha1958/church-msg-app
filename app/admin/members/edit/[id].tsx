@@ -149,7 +149,7 @@ export default function EditMember() {
                 }
             });
 
-            fd.append('_method', 'PUT');
+            fd.append('_method', 'PATCH');
 
             const token = await AsyncStorage.getItem('auth_token');
 

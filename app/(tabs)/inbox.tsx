@@ -1,4 +1,5 @@
 import api from '@/services/api';
+import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from "react";
 import { FlatList, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -70,7 +71,7 @@ export default function InboxScreen() {
 
     return (
         <SafeAreaView className="flex-1 bg-[#040c1f]">
-
+            <StatusBar style="light" />
             {/* Header */}
 
             <AppHeader title={"Messages from Church"} onMenuPress={() => setMenuOpen(true)} />

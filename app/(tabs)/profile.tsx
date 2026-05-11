@@ -1,6 +1,7 @@
 import { apiFetch } from "@/lib/api";
 import { formatDate } from "@/utils/date";
 import { useRouter } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from "react";
 import { Image, Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -8,6 +9,7 @@ import AppHeader from "../components/AppHeader";
 import AppLoader from "../components/AppLoader";
 import InfoRow from "../components/InfoRow";
 import MemberMenuModal from "../components/MemberMenuModal";
+
 
 const router = useRouter();
 
@@ -114,13 +116,16 @@ export default function Profile() {
     const logo = require("../../assets/images/icon.png")
 
     return (
+
         <SafeAreaView className="flex-1 bg-[#040c1f]">
+            <StatusBar style="light" />
 
             <AppHeader title={"Profile"} onMenuPress={() => setMenuOpen(true)} />
             <MemberMenuModal visible={menuOpen}
                 onClose={() => setMenuOpen(false)} />
 
             <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
+
                 <View className="flex-row justify-between items-center p-4 pt-6">
                     <Text className="text-xl font-bold">Profile</Text>
 

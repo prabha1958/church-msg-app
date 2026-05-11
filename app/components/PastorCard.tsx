@@ -10,7 +10,7 @@ export default function PastorCard({ item }: { item: any }) {
     return (
 
         <TouchableOpacity
-            onPress={() => router.push(`/pastor/${item.id}`)}
+            onPress={() => router.push(`/admin/clergy/view/${item.id}`)}
 
         >
 
@@ -36,7 +36,11 @@ export default function PastorCard({ item }: { item: any }) {
                 <View className="flex flex-col space-y-2">
                     <Text className="text-sm text-[#defaec]">{item.name}</Text>
                     <Text className="text-sm text-[#defaec]">{item.designation}</Text>
-                    <Text className="text-sm text-[#defaec]">{item.date_of_joining}</Text>
+                    <Text className="text-sm text-[#defaec]"> From :
+                        {new Date(item.date_of_joining)
+                            .toLocaleDateString('en-GB')
+                            .replace(/\//g, '-')}
+                    </Text>
 
                 </View>
 
