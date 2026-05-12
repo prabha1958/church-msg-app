@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
@@ -16,7 +16,9 @@ export default function AdminDashboard() {
     const [menuOpen, setMenuOpen] = useState(false);
     return (
         <ScrollView className="flex-1 bg-gray-100 p-4">
-            <StatusBar style="dark" />
+            <Stack.Screen options={{ headerShown: false }} />
+            <StatusBar style="dark" backgroundColor='#061c5e' />
+
 
             <View className='py-3 mt-10'>
                 <AppHeader title={"Admin Dashboard"} onMenuPress={() => setMenuOpen(true)} />
@@ -83,6 +85,14 @@ export default function AdminDashboard() {
                     color="bg-gray-600"
                     onPress={() => router.push('/admin/clergy')}
                 />
+                <AdminCard
+                    title="Member Search"
+                    icon="person-add"
+                    color="bg-[#666102]"
+                    onPress={() => router.push('admin/members/search')}
+                />
+
+
 
             </View>
         </ScrollView>
