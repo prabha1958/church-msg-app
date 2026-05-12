@@ -33,6 +33,7 @@ export default function RootLayout() {
     Notifications.setNotificationChannelAsync("default", {
       name: "default",
       importance: Notifications.AndroidImportance.MAX,
+      sound: 'churchbell.mp3',
     });
   }
 

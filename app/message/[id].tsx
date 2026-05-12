@@ -135,7 +135,7 @@ export default function MessageDetail() {
 
                         <ImageBackground
                             source={bgImage}
-                            resizeMode="stretch"
+                            resizeMode="contain"
                             imageStyle={{ borderRadius: 16 }}
                             className="rounded-xl p-4 mb-3 overflow-hidden brightness-110"
                         >
@@ -156,7 +156,10 @@ export default function MessageDetail() {
                                     source={{
                                         uri: `${process.env.EXPO_PUBLIC_STORAGE_URL}/${message.image_path}`,
                                     }}
-                                    className="w-full h-56 rounded-xl mb-4"
+                                    className="w-full rounded-xl mb-4"
+                                    style={{
+                                        aspectRatio: 1,
+                                    }}
                                     resizeMode="cover"
                                 />
                             )}
@@ -195,8 +198,11 @@ export default function MessageDetail() {
                                     source={{
                                         uri: `${process.env.EXPO_PUBLIC_STORAGE_URL}/${message.image_path}`,
                                     }}
-                                    className="w-full h-56 rounded-xl mb-4"
-                                    resizeMode="cover"
+                                    className="w-full rounded-xl mb-4"
+                                    style={{
+                                        aspectRatio: 1,
+                                    }}
+                                    resizeMode="contain"
                                 />
                             )}
 

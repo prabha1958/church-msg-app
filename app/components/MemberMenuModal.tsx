@@ -34,6 +34,19 @@ export default function MemberMenuModal({
     const [member, setMember] = useState<Member | null>(null);
     const [memberRole, setMemberRole] = useState<member_role | null>(null);
     const [isAdmin, setIsAdmin] = useState(false);
+    const [canViewAlliance, setCanViewAlliance] = useState(false);
+
+    function isAllianceActive(paymentDate?: string | null): boolean {
+        if (!paymentDate) return false;
+
+        const paidAt = new Date(paymentDate);
+        if (isNaN(paidAt.getTime())) return false;
+
+        const expiry = new Date(paidAt);
+        expiry.setMonth(expiry.getMonth() + 6);
+
+        return expiry >= new Date();
+    }
 
 
     // Load member when modal opens
@@ -56,6 +69,26 @@ export default function MemberMenuModal({
             useNativeDriver: true,
         }).start();
     }, [visible]);
+
+    const checkAllianceAccess = async () => {
+        const allianceStr = await AsyncStorage.getItem("alliance");
+
+        if (!allianceStr) {
+            setCanViewAlliance(false);
+            return;
+        }
+
+        const alliance = JSON.parse(allianceStr);
+        if (!alliance) {
+            setCanViewAlliance(false);
+            return;
+
+        } else {
+            const allowed = isAllianceActive(alliance.payment_date);
+            setCanViewAlliance(allowed);
+        }
+
+    };
 
 
 
@@ -132,6 +165,12 @@ export default function MemberMenuModal({
                             <TouchableOpacity onPress={() => { onClose(); router.push('/events') }} className=" border border-[#4d93f0] rounded-xl">
                                 <Text className="text-xl text-blue-50 text-center">Events</Text>
                             </TouchableOpacity>
+                            {canViewAlliance && (
+                                <TouchableOpacity onPress={() => { onClose(); router.push('/alliances') }} className=" border border-[#4d93f0] rounded-xl">
+                                    <Text className="text-xl text-blue-50 text-center">Alliances</Text>
+                                </TouchableOpacity>
+                            )}
+
                         </View>
 
                         {(memberRole == "admin") && (

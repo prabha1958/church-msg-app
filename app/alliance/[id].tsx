@@ -1,138 +1,205 @@
-import { apiFetch } from "@/lib/api";
-import { calculateAge, formatDate } from "@/utils/date";
-import { router, useLocalSearchParams } from "expo-router";
-import React, { useEffect, useState } from "react";
-import { ScrollView, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import AppHeader from "../components/AppHeader";
-import AppLoader from "../components/AppLoader";
-import ImageSlider from "../components/ImageSlider";
+import AppHeader from '@/app/components/AppHeader';
+import AppLoader from '@/app/components/AppLoader';
+import MemberMenuModal from '@/app/components/MemberMenuModal';
+import api from '@/services/api';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { Dimensions, Image, Modal, Pressable, SafeAreaView, ScrollView, Text, View } from 'react-native';
 import InfoRow from "../components/InfoRow";
-import Section from "../components/Section";
+import Section from '../components/Section';
 
-export default function AllianceDetail() {
-    const params = useLocalSearchParams<{ id?: string | string[] }>();
-    const [menuOpen, setMenuOpen] = useState(false);
+
+
+
+
+export default function ViewAlliance() {
+    const { id } = useLocalSearchParams();
+    const [alliance, setAlliance] = useState<any>(null);
     const [loading, setLoading] = useState(true);
-    const [data, setData] = useState<any>(null);
-    const allianceId =
-        typeof params.id === "string"
-            ? params.id
-            : Array.isArray(params.id)
-                ? params.id[0]
-                : null;
-
-    useEffect(() => {
-        if (allianceId) {
-            load(allianceId);
-        }
-    }, [allianceId]);
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [menuOpen, setMenuOpen] = useState(false);
+    const router = useRouter();
 
 
-    const load = async (id: string) => {
+
+    const [offlineForm, setOfflineForm] = useState({
+        amount: 3000,
+        payment_mode: 'cash',
+        reference_no: '',
+    });
+
+    const fileUrl = (path?: string | null) =>
+        path
+            ? `${process.env.EXPO_PUBLIC_STORAGE_URL}/${path}`
+            : undefined;
+
+    const loadAlliance = async () => {
         try {
-            setLoading(true)
-            const res = await apiFetch(
-                `${process.env.EXPO_PUBLIC_API_URL}/alliances/${id}`
-            );
-
-            const json = await res.json();
-
-
-
-
-
-            if (json.success) {
-                setData(json.data);
-                setLoading(false)
-            }
-        } catch (e) {
-            console.error("Failed to load alliance", e);
-            setLoading(false)
+            const res = await api.get(`/alliances/${id}`);
+            setAlliance(res.data.data)
+        } finally {
+            setLoading(false);
         }
     };
 
-    if (loading) {
-        return (
-            <AppLoader />
-        )
-    }
+    useEffect(() => {
+        loadAlliance();
+    }, []);
 
-    const age = calculateAge(data.alliance.date_of_birth);
+    if (loading) return <AppLoader />;
+
+    if (!alliance) return <Text>No data</Text>;
+
 
     const images = [
-        data.alliance.profile_photo,
-        data.alliance.photo1,
-        data.alliance.photo2,
-        data.alliance.photo3,
+        alliance.alliance.profile_photo,
+        alliance.alliance.photo1,
+        alliance.alliance.photo2,
+        alliance.alliance.photo3,
     ].filter(Boolean);
 
-    const fullName = [data.alliance.first_name, data.alliance.middle_name, data.alliance.last_name]
+    const fullName = [alliance.alliance.family_name, alliance.alliance.first_name, alliance.alliance.middle_name, alliance.alliance.last_name]
         .filter(Boolean)
         .join(" ");
 
-    const member_name = [data.member.family_name, data.member.first_name, data.member.last_name]
+    const member_name = [alliance.member.family_name, alliance.member.first_name, alliance.member.last_name]
         .filter(Boolean)
         .join(" ");
+    const email = alliance.member.email;
+    const mobile = alliance.member.mobile_number
+
 
     return (
-        <SafeAreaView className="flex-1 bg-[#040c1f]">
-            <ScrollView>
-                {/* Back */}
-                <Text
-                    className="text-amber-400 text-2xl p-4"
-                    onPress={() => router.back()}
-                >
-                    ←
-                </Text>
+        <>
+            <Stack.Screen options={{ title: '' }} />
+            <View style={{ flex: 1 }} >
 
-                <AppHeader title={fullName} onMenuPress={() => setMenuOpen(true)} />
-
-                {/* Images */}
-                <ImageSlider images={images} />
-                <Text className="text-sm text-gray-300 text-right">slide to see more photos</Text>
-                {/* Content */}
+                <SafeAreaView className="flex-1 bg-[#040c1f]">
 
 
-                <View className="p-4">
-                    <Text className="text-amber-400 text-2xl font-bold">
-                        {fullName}
-                    </Text>
 
-                    <Text className="text-slate-300 mt-1">
-                        {data.alliance.alliance_type.toUpperCase()} • {data.age} yrs
-                    </Text>
-                </View>
+                    <ScrollView className="p-4">
+                        <Text
+                            className="text-amber-400 text-2xl p-2"
+                            onPress={() => router.back()}
+                        >
+                            ←
+                        </Text>
+                        <View className='mb-4 mt-10' >
+                            <AppHeader title={alliance.alliance.first_name} onMenuPress={() => setMenuOpen(true)} />
+                        </View>
 
-                <View className="mx-4 mt-6 bg-[#071633] rounded-xl border border-[#102a56]">
-                    <InfoRow label="Family Name" value={data.alliance.family_name} />
-                    <InfoRow label="First Name" value={data.alliance.first_name} />
-                    <InfoRow label="Last Name" value={data.alliance.last_name} />
-                    <InfoRow label="Date of birth " value={formatDate(data.alliance.date_of_birth)} />
-                    <InfoRow label="Age" value={age} />
-                    <InfoRow label="Profession" value={data.alliance.profession} />
-                    <InfoRow label="Designation" value={data.alliance.designation} />
-                    <InfoRow label="Company" value={data.alliance.company_name} />
-                    <InfoRow label="Place" value={data.alliance.place_of_working} />
-                    <InfoRow label="Father" value={data.alliance.father_name} />
-                    <InfoRow label="Mother" value={data.alliance.mother_name} />
+                        <MemberMenuModal visible={menuOpen}
+                            onClose={() => setMenuOpen(false)} />
+                        {/* Profile */}
+                        <Pressable
+                            onPress={() =>
+                                fileUrl(alliance.alliance.profile_photo) &&
+                                setSelectedImage(fileUrl(alliance.alliance.profile_photo)!)
+                            }
+                        >
+                            <Image
+                                source={
+                                    fileUrl(alliance.alliance.profile_photo)
+                                        ? { uri: fileUrl(alliance.alliance.profile_photo) }
+                                        : require('../../assets/images/no-photo.png')
+                                }
+                                className="w-32 h-32 rounded-xl mb-4"
+                            />
+                        </Pressable>
 
-                    <InfoRow
-                        label="Education"
-                        value={data.alliance.educational_qualifications}
-                    />
+                        <View className="p-4">
+                            <Text className="text-amber-400 text-2xl font-bold">
+                                {fullName}
+                            </Text>
 
-                    {data.alliance.about_self && (
-                        <Section title="About Self" text={data.alliance.about_self} />
-                    )}
+                            <Text className="text-slate-300 mt-1">
+                                {alliance.alliance.alliance_type.toUpperCase()} • {alliance.age} yrs
+                            </Text>
+                        </View>
 
-                    {data.alliance.about_family && (
-                        <Section title="About Family" text={data.alliance.about_family} />
-                    )}
+                        {/* Photos */}
+                        <Text className="mt-4 font-bold text-gray-50">Photos</Text>
+                        <View className="flex-row gap-2 mt-2">
+                            {['photo1', 'photo2', 'photo3'].map((k) =>
+                                alliance.alliance[k] ? (
+                                    <Pressable
+                                        key={k}
+                                        onPress={() =>
+                                            fileUrl(alliance.alliance[k]) &&
+                                            setSelectedImage(fileUrl(alliance.alliance[k])!)
+                                        }
+                                    >
+                                        <Image
+                                            source={{ uri: fileUrl(alliance.alliance[k]) }}
+                                            className="w-24 h-24 rounded"
+                                        />
+                                    </Pressable>
+                                ) : null
+                            )}
 
-                    <InfoRow label="Posted by" value={member_name} />
-                </View>
-            </ScrollView>
-        </SafeAreaView>
+                        </View>
+                        <Text className='text-sm text-gray-50 font-bild'>click to view photo</Text>
+                        {/* Family */}
+                        <View className="mx-4 mt-6 bg-[#071633] rounded-xl border border-[#102a56]">
+
+                            <InfoRow label="Profession" value={alliance.alliance.profession} />
+                            <InfoRow label="Designation" value={alliance.alliance.designation} />
+                            <InfoRow label="Company" value={alliance.alliance.company_name} />
+                            <InfoRow label="Place" value={alliance.alliance.place_of_working} />
+                            <InfoRow label="Father" value={alliance.alliance.father_name} />
+                            <InfoRow label="Mother" value={alliance.alliance.mother_name} />
+
+                            <InfoRow
+                                label="Education"
+                                value={alliance.alliance.educational_qualifications}
+                            />
+
+                            {alliance.alliance.about_self && (
+                                <Section title="About Ward" text={alliance.alliance.about_self} />
+                            )}
+
+                            {alliance.alliance.about_family && (
+                                <Section title="About Family" text={alliance.alliance.about_family} />
+                            )}
+
+                            <InfoRow label="Posted by" value={member_name} />
+                            <InfoRow label="email" value={email} />
+                            <InfoRow label="mobile" value={mobile} />
+                        </View>
+
+
+
+
+                    </ScrollView>
+                </SafeAreaView>
+
+                {/* ✅ MODAL MUST BE HERE */}
+                <Modal visible={!!selectedImage} transparent>
+                    <Pressable
+                        onPress={() => setSelectedImage(null)}
+                        style={{
+                            flex: 1,
+                            backgroundColor: 'rgba(0,0,0,0.9)',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <Image
+                            source={{ uri: selectedImage! }}
+                            style={{
+                                width: Dimensions.get('window').width,
+                                height: Dimensions.get('window').height * 0.7,
+                                resizeMode: 'contain',
+                            }}
+                        />
+                    </Pressable>
+                </Modal>
+
+            </View>
+        </>
     );
+
+
 }
+

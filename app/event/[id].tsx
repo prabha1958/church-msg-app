@@ -2,11 +2,10 @@ import { apiFetch } from "@/lib/api";
 import { formatDate } from "@/utils/date";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { Dimensions, Image, Modal, Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AppHeader from "../components/AppHeader";
 import AppLoader from "../components/AppLoader";
-import ImageSlider from "../components/ImageSlider";
 import MemberMenuModal from "../components/MemberMenuModal";
 
 export default function EventDetail() {
@@ -14,6 +13,8 @@ export default function EventDetail() {
     const [data, setData] = useState<any>(null);
     const [menuOpen, setMenuOpen] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [viewerVisible, setViewerVisible] = useState(false);
     const pastorId =
         typeof params.id === "string"
             ? params.id
@@ -21,7 +22,10 @@ export default function EventDetail() {
                 ? params.id[0]
                 : null;
 
-
+    const fileUrl = (path?: string | null) =>
+        path
+            ? `${process.env.EXPO_PUBLIC_STORAGE_URL}/${path}`
+            : undefined;
 
 
     useEffect(() => {
@@ -79,12 +83,57 @@ export default function EventDetail() {
                 <MemberMenuModal visible={menuOpen}
                     onClose={() => setMenuOpen(false)} />
                 {/* Content */}
-                <View className="mt-7">
-                    {data.event_photos && (
-                        <ImageSlider images={data.event_photos} />
+                <Text className="mt-4 font-bold text-gray-50">Photos</Text>
+
+                <View className="flex-row gap-2 mt-2 flex-wrap">
+                    {data.event_photos.map((photo: string, index: number) =>
+                        photo ? (
+                            <Pressable
+                                key={index}
+                                onPress={() => {
+                                    const url = fileUrl(photo);
+
+                                    if (url) {
+                                        setSelectedImage(url);
+                                        setViewerVisible(true);
+                                    }
+                                }}
+                            >
+                                <Image
+                                    source={{ uri: fileUrl(photo) }}
+                                    className="w-24 h-24 rounded"
+                                />
+                            </Pressable>
+                        ) : null
                     )}
+
+                    <Modal visible={!!selectedImage} transparent>
+                        <Pressable
+                            onPress={() => setSelectedImage(null)}
+                            style={{
+                                flex: 1,
+                                backgroundColor: 'rgba(0,0,0,0.9)',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                            }}
+                        >
+                            <Image
+                                source={{ uri: selectedImage! }}
+                                style={{
+                                    width: Dimensions.get('window').width,
+                                    height: Dimensions.get('window').height * 0.7,
+                                    resizeMode: 'contain',
+                                }}
+                            />
+                        </Pressable>
+                    </Modal>
+
                 </View>
-                <Text className="text-sm text-gray-300 text-right">slide to see more photos</Text>
+
+
+
+
+                <Text className="text-sm text-gray-300 text-right">click to view photo</Text>
 
                 <View className="p-4">
 
@@ -103,6 +152,10 @@ export default function EventDetail() {
 
                 </View>
             </ScrollView>
+
         </SafeAreaView>
+
+
     );
+
 }
