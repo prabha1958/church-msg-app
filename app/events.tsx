@@ -76,6 +76,10 @@ export default function Events() {
         setRefreshing(false);
     };
 
+    const renderItem = ({ item }: any) => (
+        <EventCard item={item} />
+    );
+
 
 
     return (
@@ -112,8 +116,12 @@ export default function Events() {
             <FlatList
                 data={events}
                 keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => <EventCard item={item} />}
+                renderItem={renderItem}
                 contentContainerStyle={{ padding: 12 }}
+                initialNumToRender={10}
+                maxToRenderPerBatch={10}
+                windowSize={5}
+                removeClippedSubviews
                 refreshing={refreshing}
                 onRefresh={refreshEvents}
                 ListEmptyComponent={

@@ -1,7 +1,11 @@
+
 import { useRouter } from "expo-router";
+import React from "react";
 import { Image, Linking, Pressable, Text, TouchableOpacity, View } from "react-native";
 
-export default function MessageCard({ item }: { item: any }) {
+
+
+function MessageCard({ item }: { item: any }) {
 
     const router = useRouter();
     const type = String(item.message_type || "general").toLowerCase();
@@ -69,7 +73,7 @@ export default function MessageCard({ item }: { item: any }) {
                                 : require("../../assets/images/avatar.png")
                         }
                         className="w-20 h-20"
-                        resizeMode="contain"
+                        resizeMode="cover"
 
                     />
                 }
@@ -107,3 +111,5 @@ export default function MessageCard({ item }: { item: any }) {
         </TouchableOpacity>
     );
 }
+
+export default React.memo(MessageCard);

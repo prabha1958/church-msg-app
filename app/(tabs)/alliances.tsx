@@ -124,6 +124,9 @@ export default function InboxScreen() {
 
         return true;
     });
+    const renderItem = ({ item }: any) => (
+        <AllianceCard alliance={item.alliance} member={item.member} />
+    );
 
 
 
@@ -150,18 +153,17 @@ export default function InboxScreen() {
             <FlatList
                 data={visibleAlliances}
                 keyExtractor={(item) => item.alliance.id.toString()}
-                renderItem={({ item }) => (
-                    <AllianceCard
-                        alliance={item.alliance}
-                        member={item.member}
-                    />
-                )}
+                renderItem={renderItem}
                 contentContainerStyle={{ padding: 12 }}
+                initialNumToRender={10}
+                maxToRenderPerBatch={10}
+                windowSize={5}
+                removeClippedSubviews
                 refreshing={refreshing}
                 onRefresh={refreshAlliances}
                 ListEmptyComponent={
                     <Text className="text-center text-gray-500 mt-10">
-                        No messages available
+                        No alliances available
                     </Text>
                 }
             />

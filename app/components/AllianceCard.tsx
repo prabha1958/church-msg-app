@@ -1,4 +1,5 @@
 import { router } from "expo-router";
+import React from "react";
 import { Image, Pressable, Text, View } from "react-native";
 import { calculateAge } from "../../utils/date"; // adjust path
 
@@ -24,7 +25,7 @@ type AllianceCardProps = {
     };
 };
 
-export default function AllianceCard({
+function AllianceCard({
     alliance,
     member,
 }: AllianceCardProps) {
@@ -91,3 +92,5 @@ export default function AllianceCard({
         </Pressable>
     );
 }
+
+export default React.memo(AllianceCard);

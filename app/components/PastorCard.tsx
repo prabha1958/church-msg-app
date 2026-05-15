@@ -1,7 +1,8 @@
 import { useRouter } from "expo-router";
+import React from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
-export default function PastorCard({ item }: { item: any }) {
+function PastorCard({ item }: { item: any }) {
 
     const router = useRouter();
 
@@ -10,7 +11,7 @@ export default function PastorCard({ item }: { item: any }) {
     return (
 
         <TouchableOpacity
-            onPress={() => router.push(`/admin/clergy/view/${item.id}`)}
+            onPress={() => router.push(`/pastor/${item.id}`)}
 
         >
 
@@ -51,3 +52,4 @@ export default function PastorCard({ item }: { item: any }) {
         </TouchableOpacity>
     );
 }
+export default React.memo(PastorCard)

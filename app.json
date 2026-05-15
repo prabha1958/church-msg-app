@@ -48,7 +48,10 @@
         {
           "icon": "./assets/images/notification-icon.png",
           "color": "#ffffff",
-          "enableBackgroundRemoteNotifications": true
+          "enableBackgroundRemoteNotifications": true,
+          "sounds": [
+            "./assets/sounds/church_bell.mp3"
+          ]
         }
       ],
       "expo-build-properties",

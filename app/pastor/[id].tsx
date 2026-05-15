@@ -86,7 +86,7 @@ export default function PastorDetail() {
                                 uri: `${process.env.EXPO_PUBLIC_STORAGE_URL}/${data.photo}`,
                             }}
                             className="w-full h-56 rounded-xl mb-4"
-                            resizeMode="cover"
+                            resizeMode="contain"
                         />
                     )}
                 </View>

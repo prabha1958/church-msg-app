@@ -57,7 +57,9 @@ export default function InboxScreen() {
         await fetchMessages();   // your existing API call
         setRefreshing(false);
     };
-
+    const renderItem = ({ item }: any) => (
+        <MessageCard item={item} />
+    );
 
 
     if (loading) {
@@ -84,8 +86,12 @@ export default function InboxScreen() {
             <FlatList
                 data={messages}
                 keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => <MessageCard item={item} />}
+                renderItem={renderItem}
                 contentContainerStyle={{ padding: 12 }}
+                initialNumToRender={10}
+                maxToRenderPerBatch={10}
+                windowSize={5}
+                removeClippedSubviews
                 refreshing={refreshing}
                 onRefresh={refreshMessages}
                 ListEmptyComponent={

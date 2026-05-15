@@ -11,6 +11,7 @@ import InfoRow from "../components/InfoRow";
 import MemberMenuModal from "../components/MemberMenuModal";
 
 
+
 const router = useRouter();
 
 
@@ -115,6 +116,7 @@ export default function Profile() {
 
     const logo = require("../../assets/images/icon.png")
 
+
     return (
 
         <SafeAreaView className="flex-1 bg-[#040c1f]">
@@ -136,6 +138,8 @@ export default function Profile() {
                         <Text className="text-white font-semibold">Edit</Text>
                     </Pressable>
                 </View>
+
+
                 {/* Photos */}
                 <View className="items-center mt-6">
                     <Image
@@ -184,6 +188,6 @@ export default function Profile() {
 
 
             </ScrollView>
-        </SafeAreaView>
+        </SafeAreaView >
     );
 }

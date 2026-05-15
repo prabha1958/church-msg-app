@@ -1,7 +1,8 @@
 import { useRouter } from "expo-router";
+import React from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
-export default function EventCard({ item }: { item: any }) {
+function EventCard({ item }: { item: any }) {
     const router = useRouter();
 
 
@@ -45,3 +46,4 @@ export default function EventCard({ item }: { item: any }) {
         </TouchableOpacity>
     );
 }
+export default React.memo(EventCard)
